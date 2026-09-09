@@ -1,0 +1,15 @@
+﻿8. DIRECTORY COUNTS
+======================================================================
+bridge	0 files
+bridge\extension	4 files
+bridge\native_host	5 files
+bridge\tests	6 files
+bridge\tests\site	1 files
+docs	2 files
+openhands_sandbox	0 files
+registries	6 files
+runtime	24 files
+schemas	1 files
+state	0 files
+tests	66 files
+tests\fixtures	1 files

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimulationAgent Bridge Test Site</title>
+</head>
+<body>
+    <h1>SimulationAgent Bridge Test Site</h1>
+    <p id="status">Waiting for Bridge...</p>
+
+    <script>
+        window.addEventListener("message", (event) => {
+            if (event.source !== window) {
+                return;
+            }
+
+            const message = event.data;
+
+            if (
+                message &&
+                message.source === "simulationagent-bridge" &&
+                message.type === "bridge_ready"
+            ) {
+                document.getElementById("status").textContent =
+                    "Bridge ready";
+            }
+
+            if (
+                message &&
+                message.source === "simulationagent-bridge" &&
+                message.type === "task_response"
+            ) {
+                console.log(
+                    "Bridge task response:",
+                    message
+                );
+            }
+        });
+    </script>
+</body>
+</html>

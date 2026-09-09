@@ -1,0 +1,803 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simulationagent.local/schemas/task-v3.schema.json",
+  "title": "SimulationAgent Task V3",
+  "description": "Machine-readable contract for SimulationAgent Task V3. Semantic model only; concrete execution remains runtime-owned.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "description",
+    "intent",
+    "preconditions",
+    "expected",
+    "validation",
+    "execution_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 3,
+      "description": "Task schema version. Independent from GoalSpec, Expected, TestSpec, Handler and Provider versions."
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable task description. It is not the machine-readable semantic source of truth."
+    },
+    "intent": {
+      "$ref": "#/$defs/taskIntent"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/precondition"
+      },
+      "description": "All listed preconditions are mandatory and have implicit AND semantics."
+    },
+    "expected": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/expectedCondition"
+      },
+      "description": "Atomic postconditions with implicit AND semantics."
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/validationSpec"
+      },
+      "description": "Read-only verification requirements used to establish sufficient evidence for required results."
+    },
+    "execution_policy": {
+      "$ref": "#/$defs/executionPolicy"
+    }
+  },
+  "$defs": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "CHANGE",
+        "VERIFY",
+        "INSPECT",
+        "MIGRATE"
+      ]
+    },
+    "targetKind": {
+      "type": "string",
+      "enum": [
+        "PROJECT",
+        "FILE",
+        "SYMBOL",
+        "SUBSYSTEM",
+        "TEST"
+      ]
+    },
+    "goalKind": {
+      "type": "string",
+      "enum": [
+        "OUTCOME",
+        "STATE",
+        "ASSERTION"
+      ]
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ]
+    },
+    "taskTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identifier",
+        "scope"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/targetKind"
+        },
+        "identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "$ref": "#/$defs/targetScope"
+        }
+      }
+    },
+    "targetScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "namespace": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "taskGoal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identifier",
+        "version",
+        "parameters"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/goalKind"
+        },
+        "identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parameters": {
+          "type": "object"
+        }
+      }
+    },
+    "taskIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation",
+        "target",
+        "goal"
+      ],
+      "properties": {
+        "operation": {
+          "$ref": "#/$defs/operation"
+        },
+        "target": {
+          "$ref": "#/$defs/taskTarget"
+        },
+        "goal": {
+          "$ref": "#/$defs/taskGoal"
+        }
+      }
+    },
+    "conditionIdentifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preconditionKind": {
+      "type": "string",
+      "enum": [
+        "STATE",
+        "ASSERTION",
+        "TEST"
+      ]
+    },
+    "precondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "identifier",
+        "version",
+        "parameters"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "$ref": "#/$defs/preconditionKind"
+        },
+        "identifier": {
+          "$ref": "#/$defs/conditionIdentifier"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "STATE"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/stateParameters"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ASSERTION"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/assertionParameters"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "TEST"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/testParameters"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "expectedKind": {
+      "type": "string",
+      "enum": [
+        "STATE",
+        "ASSERTION",
+        "TEST",
+        "CHANGESET"
+      ]
+    },
+    "expectedCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "identifier",
+        "version",
+        "parameters"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "$ref": "#/$defs/expectedKind"
+        },
+        "identifier": {
+          "$ref": "#/$defs/conditionIdentifier"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "STATE"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/stateParameters"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ASSERTION"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/assertionParameters"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "TEST"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/testParameters"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CHANGESET"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/changesetParameters"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "validationSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "identifier",
+        "version",
+        "applies_to",
+        "evidence_requirements"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "applies_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence_requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRequirement"
+          }
+        }
+      }
+    },
+    "evidenceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_kind",
+        "freshness"
+      ],
+      "properties": {
+        "source_kind": {
+          "type": "string",
+          "enum": [
+            "STATE_OBSERVATION",
+            "TEST_RESULT",
+            "CHANGESET_OBSERVATION",
+            "ASSERTION_RESULT"
+          ]
+        },
+        "freshness": {
+          "type": "string",
+          "enum": [
+            "ANY",
+            "CURRENT",
+            "POST_EXECUTION",
+            "VALIDATION"
+          ]
+        }
+      }
+    },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timeout",
+        "retry",
+        "parallelism",
+        "resources",
+        "failure",
+        "rollback"
+      ],
+      "properties": {
+        "timeout": {
+          "$ref": "#/$defs/timeoutPolicy"
+        },
+        "retry": {
+          "$ref": "#/$defs/retryPolicy"
+        },
+        "parallelism": {
+          "$ref": "#/$defs/parallelismPolicy"
+        },
+        "resources": {
+          "$ref": "#/$defs/resourcePolicy"
+        },
+        "failure": {
+          "$ref": "#/$defs/failurePolicy"
+        },
+        "rollback": {
+          "$ref": "#/$defs/rollbackPolicy"
+        }
+      }
+    },
+    "timeoutPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_seconds"
+      ],
+      "properties": {
+        "total_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "retryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts"
+      ],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "parallelismPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_workers"
+      ],
+      "properties": {
+        "max_workers": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "resourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cpu": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "memory_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "process_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "disk_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "io_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "failurePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "ABORT",
+            "ROLLBACK",
+            "CONTINUE"
+          ]
+        }
+      }
+    },
+    "rollbackPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "REQUIRED",
+            "OPTIONAL",
+            "NOT_APPLICABLE"
+          ]
+        }
+      }
+    },
+    "stateParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "property",
+        "operator",
+        "expected_value"
+      ],
+      "properties": {
+        "property": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS",
+            "GREATER",
+            "GREATER_OR_EQUAL",
+            "LESS",
+            "LESS_OR_EQUAL",
+            "IN",
+            "CONTAINS"
+          ]
+        },
+        "expected_value": {}
+      }
+    },
+    "assertionParameters": {
+      "type": "object"
+    },
+    "testParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_status"
+      ],
+      "properties": {
+        "expected_status": {
+          "type": "string",
+          "enum": [
+            "PASSED",
+            "FAILED",
+            "SKIPPED",
+            "BLOCKED"
+          ]
+        }
+      }
+    },
+    "changeRecord": {
+      "oneOf": [
+        {
+          "title": "Added change record",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "kind"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "ADDED"
+            }
+          }
+        },
+        {
+          "title": "Modified change record",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "kind"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "MODIFIED"
+            }
+          }
+        },
+        {
+          "title": "Deleted change record",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "kind"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "DELETED"
+            }
+          }
+        },
+        {
+          "title": "Renamed change record",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "old_path",
+            "new_path",
+            "kind"
+          ],
+          "properties": {
+            "old_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "new_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "RENAMED"
+            }
+          }
+        }
+      ]
+    },
+    "changesetParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "CONSTRAINED",
+            "EXACT"
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeRecord"
+          }
+        },
+        "allowed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeRecord"
+          }
+        },
+        "forbidden": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeRecord"
+          }
+        }
+      }
+    }
+  }
+}

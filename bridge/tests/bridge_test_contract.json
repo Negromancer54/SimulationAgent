@@ -1,0 +1,1949 @@
+{
+    "schema_version": 1,
+    "contract": "Bridge Test Contract",
+    "version": "0.1",
+    "levels": {
+        "B": "Bridge JavaScript",
+        "P": "Python Native Host",
+        "E": "End-to-End",
+        "PA": "Page API"
+    },
+    "tests": [
+        {
+            "id": "B-01",
+            "name": "Valid task request",
+            "level": "B",
+            "regression": true,
+            "setup": {
+                "reload_extension": true,
+                "reload_chatgpt_page": true
+            },
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-01-REQ-001",
+                "task": {
+                    "task_id": "B-01-TASK-001",
+                    "description": "Valid Bridge request.",
+                    "edits": [],
+                    "expected_paths": []
+                }
+            },
+            "actions": [
+                "send task_request through window.postMessage"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": true
+                },
+                "task": {
+                    "reaches_background": true
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-01-REQ-001",
+                    "success": true
+                }
+            },
+            "invariants": [
+                "request_id is preserved",
+                "task_id is preserved inside task",
+                "valid request is not rejected by Bridge validation"
+            ],
+            "oracle": {
+                "response.source": "simulationagent-bridge",
+                "response.type": "task_response",
+                "response.request_id": "B-01-REQ-001",
+                "response.success": true
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "All oracle fields match expected values"
+            ]
+        },
+        {
+            "id": "B-02",
+            "name": "Missing request_id",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "task": {
+                    "task_id": "B-02-TASK-001"
+                }
+            },
+            "actions": [
+                "send task_request without request_id"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": null,
+                    "success": false
+                }
+            },
+            "invariants": [
+                "request is rejected before background forwarding"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": null,
+                "response.success": false,
+                "response.error.code": "INVALID_REQUEST_ID"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_REQUEST_ID is returned"
+            ]
+        },
+        {
+            "id": "B-03",
+            "name": "Empty request_id",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "",
+                "task": {
+                    "task_id": "B-03-TASK-001"
+                }
+            },
+            "actions": [
+                "send task_request with empty request_id"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "empty request_id is rejected"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "",
+                "response.success": false,
+                "response.error.code": "INVALID_REQUEST_ID"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_REQUEST_ID is returned"
+            ]
+        },
+        {
+            "id": "B-04",
+            "name": "Missing task",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-04-REQ-001"
+            },
+            "actions": [
+                "send task_request without task"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-04-REQ-001",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "request is rejected before background forwarding"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "B-04-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_TASK"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_TASK is returned"
+            ]
+        },
+        {
+            "id": "B-05",
+            "name": "Task is an array",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-05-REQ-001",
+                "task": []
+            },
+            "actions": [
+                "send task_request with task as array"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-05-REQ-001",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "array is not accepted as task object"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "B-05-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_TASK"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_TASK is returned"
+            ]
+        },
+        {
+            "id": "B-06",
+            "name": "Missing task_id",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-06-REQ-001",
+                "task": {
+                    "description": "Task without task_id."
+                }
+            },
+            "actions": [
+                "send task_request with task without task_id"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-06-REQ-001",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "task without task_id is rejected"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "B-06-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_TASK_ID"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_TASK_ID is returned"
+            ]
+        },
+        {
+            "id": "B-07",
+            "name": "Empty task_id",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-07-REQ-001",
+                "task": {
+                    "task_id": ""
+                }
+            },
+            "actions": [
+                "send task_request with empty task_id"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-07-REQ-001",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "empty task_id is rejected"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "B-07-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_TASK_ID"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_TASK_ID is returned"
+            ]
+        },
+        {
+            "id": "B-08",
+            "name": "Invalid request type",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "wrong_type",
+                "request_id": "B-08-REQ-001",
+                "task": {
+                    "task_id": "B-08-TASK-001"
+                }
+            },
+            "actions": [
+                "send request with valid source and invalid type"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-08-REQ-001",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "known source with invalid type is rejected"
+            ],
+            "oracle": {
+                "response.type": "task_response",
+                "response.request_id": "B-08-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_REQUEST_TYPE"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "INVALID_REQUEST_TYPE is returned"
+            ]
+        },
+        {
+            "id": "B-09",
+            "name": "Foreign source ignored",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "foreign-source",
+                "type": "task_request",
+                "request_id": "B-09-REQ-001",
+                "task": {
+                    "task_id": "B-09-TASK-001"
+                }
+            },
+            "actions": [
+                "send request with foreign source"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": false,
+                    "request_ignored": true
+                },
+                "response": {
+                    "generated": false
+                }
+            },
+            "invariants": [
+                "foreign messages do not trigger Bridge responses"
+            ],
+            "oracle": {
+                "response.generated": false
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "No Bridge response is generated"
+            ]
+        },
+        {
+            "id": "B-10",
+            "name": "Response correlation",
+            "level": "B",
+            "regression": true,
+            "setup": {},
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "B-10-REQ-001",
+                "task": {
+                    "task_id": "B-10-TASK-001",
+                    "description": "Response correlation test.",
+                    "edits": [],
+                    "expected_paths": []
+                }
+            },
+            "actions": [
+                "send task_request",
+                "observe task_response"
+            ],
+            "expected": {
+                "bridge": {
+                    "request_accepted": true
+                },
+                "response": {
+                    "type": "task_response",
+                    "request_id": "B-10-REQ-001"
+                }
+            },
+            "invariants": [
+                "response request_id equals request request_id"
+            ],
+            "oracle": {
+                "response.request_id": "B-10-REQ-001"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "Request and response request_id values are identical"
+            ]
+        },
+        {
+            "id": "B-11",
+            "name": "Duplicate task_id",
+            "level": "B",
+            "regression": true,
+            "setup": {
+                "pending_task_required": true
+            },
+            "input": {
+                "first": {
+                    "task_id": "B-11-TASK-001"
+                },
+                "second": {
+                    "task_id": "B-11-TASK-001"
+                }
+            },
+            "actions": [
+                "create first pending task",
+                "attempt second task with same task_id"
+            ],
+            "expected": {
+                "bridge": {
+                    "second_request_accepted": false
+                },
+                "response": {
+                    "success": false,
+                    "error.code": "BRIDGE_REQUEST_FAILED"
+                }
+            },
+            "invariants": [
+                "same task_id cannot occupy pendingTasks twice",
+                "first pending task remains intact"
+            ],
+            "oracle": {
+                "second_request.error.code": "BRIDGE_REQUEST_FAILED"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "Duplicate task_id is rejected",
+                "first task remains pending"
+            ]
+        },
+        {
+            "id": "B-12",
+            "name": "Native disconnect handler",
+            "level": "B",
+            "regression": true,
+            "setup": {
+                "pending_task_required": true,
+                "native_port_required": true
+            },
+            "input": {
+                "task_id": "B-12-TASK-001"
+            },
+            "actions": [
+                "create pending task",
+                "trigger nativePort onDisconnect handler"
+            ],
+            "expected": {
+                "bridge": {
+                    "disconnect_detected": true
+                },
+                "pending_task": {
+                    "rejected": true
+                },
+                "error": {
+                    "code": "NATIVE_HOST_DISCONNECTED"
+                }
+            },
+            "invariants": [
+                "all pending tasks are rejected on native disconnect"
+            ],
+            "oracle": {
+                "error.code": "NATIVE_HOST_DISCONNECTED"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "Pending task receives NATIVE_HOST_DISCONNECTED"
+            ]
+        },
+        {
+            "id": "B-13",
+            "name": "Pending task cleanup",
+            "level": "B",
+            "regression": true,
+            "setup": {
+                "pending_task_required": true,
+                "native_port_required": true
+            },
+            "input": {
+                "task_id": "B-13-TASK-001"
+            },
+            "actions": [
+                "create one pending task",
+                "trigger nativePort onDisconnect handler",
+                "inspect pendingTasks"
+            ],
+            "expected": {
+                "pendingTasks": {
+                    "before": 1,
+                    "after": 0
+                },
+                "nativePort": {
+                    "after": null
+                }
+            },
+            "invariants": [
+                "disconnect removes every pending task",
+                "nativePort is cleared"
+            ],
+            "oracle": {
+                "pendingTasks.size.before": 1,
+                "pendingTasks.size.after": 0,
+                "nativePort.after": null
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "pendingTasks is empty after disconnect",
+                "nativePort is null after disconnect"
+            ]
+        },
+        {
+            "id": "P-01",
+            "name": "Native host ping",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true
+            },
+            "input": {
+                "message": {
+                    "type": "ping"
+                }
+            },
+            "actions": [
+                "send ping message to native host"
+            ],
+            "expected": {
+                "response": {
+                    "type": "pong"
+                }
+            },
+            "invariants": [
+                "native host remains available after ping"
+            ],
+            "oracle": {
+                "response.type": "pong",
+                "response.message": "SimulationAgent Bridge native host is alive"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "Response type is pong",
+                "Response message matches expected native host message"
+            ]
+        },
+        {
+            "id": "P-02",
+            "name": "Native host agent test",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true,
+                "simulation_agent_importable": true
+            },
+            "input": {
+                "message": {
+                    "type": "agent_test"
+                }
+            },
+            "actions": [
+                "send agent_test message to native host"
+            ],
+            "expected": {
+                "response": {
+                    "type": "agent_test_response",
+                    "success": true
+                }
+            },
+            "invariants": [
+                "SimulationAgent can be imported by native host"
+            ],
+            "oracle": {
+                "response.type": "agent_test_response",
+                "response.success": true,
+                "response.message": "SimulationAgent imported successfully"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "Response type is agent_test_response",
+                "Response success is true",
+                "Native host confirms SimulationAgent import"
+            ]
+        },
+        {
+            "id": "P-03",
+            "name": "Native host valid task",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "message": {
+                    "type": "task",
+                    "task": {
+                        "task_id": "P-03-TASK-001",
+                        "description": "Native host valid task test.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "native_host_valid_task_probe.txt",
+                                "content": "Native host valid task test.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "native_host_valid_task_probe.txt"
+                        ]
+                    }
+                }
+            },
+            "actions": [
+                "send valid task message to native host",
+                "wait for task_result"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result",
+                    "task_id": "P-03-TASK-001"
+                },
+                "task": {
+                    "success": true,
+                    "stage": "COMPLETE",
+                    "diff_validated": true
+                },
+                "filesystem": {
+                    "probe_created": true
+                },
+                "git": {
+                    "checkpoint_created": true
+                }
+            },
+            "invariants": [
+                "task_id is preserved from native message to task_result",
+                "valid task reaches SimulationAgent",
+                "SimulationAgent result is serialized without losing fields",
+                "successful task completes without rollback"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.task_id": "P-03-TASK-001",
+                "response.result.success": true,
+                "response.result.stage": "COMPLETE",
+                "response.result.diff_validated": true,
+                "response.result.rollback_result": null
+            },
+            "metrics": {
+                "result": "task execution elapsed time"
+            },
+            "pass_criteria": [
+                "task_result is returned",
+                "task_id matches input task_id",
+                "TaskResult.success is true",
+                "TaskResult.stage is COMPLETE",
+                "diff_validated is true",
+                "rollback_result is null"
+            ]
+        },
+        {
+            "id": "P-04",
+            "name": "Native host missing task",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true
+            },
+            "input": {
+                "message": {
+                    "type": "task"
+                }
+            },
+            "actions": [
+                "send task message without task"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "missing task is rejected by native host",
+                "SimulationAgent is not invoked with an invalid task object"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.success": false,
+                "response.failure_code": "INVALID_TASK_MESSAGE",
+                "response.failure_message": "Missing or invalid task object."
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "task_result is returned",
+                "success is false",
+                "failure_code is INVALID_TASK_MESSAGE"
+            ]
+        },
+        {
+            "id": "P-05",
+            "name": "Native host task has invalid type",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true
+            },
+            "input": {
+                "message": {
+                    "type": "task",
+                    "task": []
+                }
+            },
+            "actions": [
+                "send task message with task as array"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result",
+                    "success": false
+                }
+            },
+            "invariants": [
+                "non-object task is rejected by native host",
+                "SimulationAgent is not invoked with invalid task data"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.success": false,
+                "response.failure_code": "INVALID_TASK_MESSAGE",
+                "response.failure_message": "Missing or invalid task object."
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "task_result is returned",
+                "success is false",
+                "failure_code is INVALID_TASK_MESSAGE"
+            ]
+        },
+        {
+            "id": "P-06",
+            "name": "TaskResult serialization",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true,
+                "simulation_agent_importable": true
+            },
+            "input": {
+                "message": {
+                    "type": "task",
+                    "task": {
+                        "task_id": "P-06-TASK-001",
+                        "description": "TaskResult serialization test.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "native_host_serialization_probe.txt",
+                                "content": "TaskResult serialization test.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "native_host_serialization_probe.txt"
+                        ]
+                    }
+                }
+            },
+            "actions": [
+                "send valid task",
+                "wait for task_result",
+                "inspect serialized result"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result",
+                    "task_id": "P-06-TASK-001"
+                },
+                "result": {
+                    "success": true,
+                    "stage": "COMPLETE"
+                }
+            },
+            "invariants": [
+                "TaskResult fields survive serialization",
+                "task_id is preserved",
+                "success state is preserved",
+                "stage is preserved",
+                "diagnostics_stdout is preserved",
+                "diagnostics_stderr is preserved"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.task_id": "P-06-TASK-001",
+                "response.result.success": true,
+                "response.result.stage": "COMPLETE",
+                "response.result.checkpoint": "non-empty",
+                "response.result.attempts": 1,
+                "response.result.diff_success": true,
+                "response.result.diff_validated": true,
+                "response.result.failure_code": null,
+                "response.result.failure_message": null,
+                "response.result.rollback_result": null,
+                "response.result.diagnostics_stdout": "non-empty",
+                "response.result.diagnostics_stderr": ""
+            },
+            "metrics": {
+                "diagnostics_stdout_length": "bytes",
+                "diagnostics_stderr_length": "bytes"
+            },
+            "pass_criteria": [
+                "task_result is returned",
+                "task_id matches input",
+                "success is true",
+                "stage is COMPLETE",
+                "checkpoint is preserved",
+                "diff_success is true",
+                "diff_validated is true",
+                "diagnostics_stdout is non-empty",
+                "diagnostics_stderr is empty"
+            ]
+        },
+        {
+            "id": "P-07",
+            "name": "Diagnostics capture",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true,
+                "simulation_agent_importable": true
+            },
+            "input": {
+                "message": {
+                    "type": "task",
+                    "task": {
+                        "task_id": "P-07-TASK-001",
+                        "description": "Diagnostics capture test.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "native_host_diagnostics_probe.txt",
+                                "content": "Diagnostics capture test.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "native_host_diagnostics_probe.txt"
+                        ]
+                    }
+                }
+            },
+            "actions": [
+                "send valid task",
+                "wait for task_result",
+                "inspect diagnostics fields"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result",
+                    "task_id": "P-07-TASK-001"
+                },
+                "result": {
+                    "success": true,
+                    "stage": "COMPLETE"
+                }
+            },
+            "invariants": [
+                "diagnostics collected during run_task survive Native Host processing",
+                "stdout diagnostics are not discarded",
+                "stderr diagnostics remain distinguishable from stdout"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.task_id": "P-07-TASK-001",
+                "response.result.success": true,
+                "response.result.stage": "COMPLETE",
+                "response.result.diagnostics_stdout": "non-empty",
+                "response.result.diagnostics_stderr": "",
+                "response.result.failure_code": null,
+                "response.result.failure_message": null
+            },
+            "metrics": {
+                "diagnostics_stdout_length": "bytes",
+                "diagnostics_stderr_length": "bytes"
+            },
+            "pass_criteria": [
+                "task_result is returned",
+                "success is true",
+                "stage is COMPLETE",
+                "diagnostics_stdout is non-empty",
+                "diagnostics_stderr is empty",
+                "failure_code is null"
+            ]
+        },
+        {
+            "id": "P-08",
+            "name": "Native host invalid Task",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true
+            },
+            "input": {
+                "message": {
+                    "type": "task",
+                    "task": {
+                        "task_id": "",
+                        "description": "",
+                        "edits": [],
+                        "expected_paths": []
+                    }
+                }
+            },
+            "actions": [
+                "send invalid Task",
+                "wait for task_result"
+            ],
+            "expected": {
+                "response": {
+                    "type": "task_result"
+                },
+                "result": {
+                    "success": false
+                }
+            },
+            "invariants": [
+                "invalid Task reaches SimulationAgent validation",
+                "native host returns a structured TaskResult"
+            ],
+            "oracle": {
+                "response.type": "task_result",
+                "response.task_id": "",
+                "response.result.success": false
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "task_result is returned",
+                "TaskResult.success is false"
+            ]
+        },
+        {
+            "id": "P-09",
+            "name": "Native host unknown message type",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true
+            },
+            "input": {
+                "message": {
+                    "type": "unknown_message_type"
+                }
+            },
+            "actions": [
+                "send unknown message type to native host",
+                "wait for response"
+            ],
+            "expected": {
+                "response": {
+                    "type": "error",
+                    "message": "Unknown message type"
+                }
+            },
+            "invariants": [
+                "unknown message type does not crash native host",
+                "native host returns a structured protocol error"
+            ],
+            "oracle": {
+                "response.type": "error",
+                "response.message": "Unknown message type"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "error response is returned",
+                "response type is error",
+                "response message identifies unknown message type"
+            ]
+        },
+        {
+            "id": "P-10",
+            "name": "Sequential task handling",
+            "level": "P",
+            "regression": true,
+            "setup": {
+                "native_host_running": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "messages": [
+                    {
+                        "type": "task",
+                        "task": {
+                            "task_id": "P-10-TASK-001",
+                            "description": "Sequential task one.",
+                            "edits": [
+                                {
+                                    "type": "create",
+                                    "path": "native_host_sequential_probe_1.txt",
+                                    "content": "Sequential task one.\n"
+                                }
+                            ],
+                            "expected_paths": [
+                                "native_host_sequential_probe_1.txt"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "task",
+                        "task": {
+                            "task_id": "P-10-TASK-002",
+                            "description": "Sequential task two.",
+                            "edits": [
+                                {
+                                    "type": "create",
+                                    "path": "native_host_sequential_probe_2.txt",
+                                    "content": "Sequential task two.\n"
+                                }
+                            ],
+                            "expected_paths": [
+                                "native_host_sequential_probe_2.txt"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "actions": [
+                "start one native host process",
+                "send first task",
+                "wait for first task_result",
+                "verify first task result",
+                "cleanup first test file",
+                "cleanup first checkpoint state",
+                "send second task",
+                "wait for second task_result",
+                "verify second task result",
+                "cleanup second test file",
+                "cleanup final checkpoint state"
+            ],
+            "expected": {
+                "responses": [
+                    {
+                        "type": "task_result",
+                        "task_id": "P-10-TASK-001"
+                    },
+                    {
+                        "type": "task_result",
+                        "task_id": "P-10-TASK-002"
+                    }
+                ],
+                "tasks": {
+                    "first_success": true,
+                    "second_success": true
+                },
+                "filesystem": {
+                    "probe_1_created": true,
+                    "probe_2_created": true
+                },
+                "git": {
+                    "clean_between_tasks": true,
+                    "final_clean": true,
+                    "checkpoint_absent": true
+                }
+            },
+            "invariants": [
+                "both tasks use the same native host session",
+                "first task completes successfully before the second starts",
+                "responses remain associated with their task_id",
+                "transaction state from the first task is cleaned before the second task",
+                "second task is accepted after the first transaction is cleaned",
+                "native host remains usable after the first successful task",
+                "runner cleans up all files created by the test"
+            ],
+            "oracle": {
+                "responses[0].type": "task_result",
+                "responses[0].task_id": "P-10-TASK-001",
+                "responses[0].result.success": true,
+                "responses[1].type": "task_result",
+                "responses[1].task_id": "P-10-TASK-002",
+                "responses[1].result.success": true
+            },
+            "metrics": {
+                "task_1_elapsed": "seconds",
+                "task_2_elapsed": "seconds",
+                "total_elapsed": "seconds"
+            },
+            "pass_criteria": [
+                "first task_result is returned",
+                "second task_result is returned",
+                "first task_id matches first input",
+                "second task_id matches second input",
+                "first task completes successfully",
+                "second task completes successfully",
+                "transaction state is clean between tasks",
+                "project is clean after cleanup",
+                "checkpoint is absent after cleanup"
+            ]
+        },
+        {
+            "id": "E-01",
+            "name": "Successful task through full Bridge",
+            "level": "E",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "E-01-REQ-001",
+                "task": {
+                    "task_id": "E-01-TASK-001",
+                    "description": "Full Bridge successful task test.",
+                    "edits": [
+                        {
+                            "type": "create",
+                            "path": "e01_bridge_probe.txt",
+                            "content": "E-01 Bridge test.\n"
+                        }
+                    ],
+                    "expected_paths": [
+                        "e01_bridge_probe.txt"
+                    ]
+                }
+            },
+            "actions": [
+                "send task_request through page world",
+                "receive task_response in page world",
+                "verify Bridge response",
+                "verify TaskResult",
+                "verify probe file creation",
+                "remove probe file",
+                "remove checkpoint state"
+            ],
+            "expected": {
+                "bridge": {
+                    "success": true
+                },
+                "response": {
+                    "source": "simulationagent-bridge",
+                    "type": "task_response",
+                    "request_id": "E-01-REQ-001"
+                },
+                "task": {
+                    "success": true,
+                    "stage": "COMPLETE"
+                },
+                "filesystem": {
+                    "probe_created": true
+                }
+            },
+            "invariants": [
+                "request_id survives the complete Bridge round trip",
+                "task_id reaches SimulationAgent unchanged",
+                "Bridge does not reinterpret TaskResult.success",
+                "successful Task completes without rollback"
+            ],
+            "oracle": {
+                "response.source": "simulationagent-bridge",
+                "response.type": "task_response",
+                "response.request_id": "E-01-REQ-001",
+                "response.success": true,
+                "response.result.success": true,
+                "response.result.stage": "COMPLETE",
+                "response.result.diff_validated": true,
+                "response.result.rollback_result": null
+            },
+            "metrics": {
+                "bridge_round_trip": "milliseconds",
+                "task_elapsed": "seconds"
+            },
+            "pass_criteria": [
+                "page receives task_response",
+                "request_id matches the request",
+                "outer success is true",
+                "TaskResult.success is true",
+                "TaskResult.stage is COMPLETE",
+                "diff_validated is true",
+                "probe file is created",
+                "test cleanup restores clean state"
+            ]
+        },
+        {
+            "id": "E-02",
+            "name": "Invalid Bridge request rejected before Agent",
+            "level": "E",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "E-02-REQ-001"
+            },
+            "actions": [
+                "send task_request without task",
+                "receive task_response in page world",
+                "verify no Agent transaction occurred"
+            ],
+            "expected": {
+                "bridge": {
+                    "success": false,
+                    "request_accepted": false
+                },
+                "response": {
+                    "source": "simulationagent-bridge",
+                    "type": "task_response",
+                    "request_id": "E-02-REQ-001",
+                    "success": false
+                },
+                "task": {
+                    "reached_agent": false
+                },
+                "filesystem": {
+                    "changed": false
+                }
+            },
+            "invariants": [
+                "invalid Bridge request is rejected by content.js",
+                "invalid request does not reach background.js",
+                "invalid request does not invoke SimulationAgent"
+            ],
+            "oracle": {
+                "response.source": "simulationagent-bridge",
+                "response.type": "task_response",
+                "response.request_id": "E-02-REQ-001",
+                "response.success": false,
+                "response.error.code": "INVALID_TASK"
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "page receives task_response",
+                "outer success is false",
+                "error code is INVALID_TASK",
+                "no project files are changed",
+                "no checkpoint is created"
+            ]
+        },
+        {
+            "id": "E-03",
+            "name": "Invalid Task reaches Agent validation",
+            "level": "E",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "source": "simulationagent-page",
+                "type": "task_request",
+                "request_id": "E-03-REQ-001",
+                "task": {
+                    "task_id": "E-03-TASK-001",
+                    "description": "",
+                    "edits": [],
+                    "expected_paths": []
+                }
+            },
+            "actions": [
+                "send task_request through page world",
+                "receive task_response in page world",
+                "verify TaskResult returned by Agent"
+            ],
+            "expected": {
+                "bridge": {
+                    "success": true
+                },
+                "response": {
+                    "source": "simulationagent-bridge",
+                    "type": "task_response",
+                    "request_id": "E-03-REQ-001",
+                    "success": true
+                },
+                "task": {
+                    "reached_agent": true,
+                    "success": false
+                },
+                "filesystem": {
+                    "changed": false
+                }
+            },
+            "invariants": [
+                "Bridge accepts structurally valid request",
+                "invalid Task is rejected by SimulationAgent validation",
+                "Bridge returns the Agent result without reclassifying it as a transport failure"
+            ],
+            "oracle": {
+                "response.source": "simulationagent-bridge",
+                "response.type": "task_response",
+                "response.request_id": "E-03-REQ-001",
+                "response.success": true,
+                "response.result.success": false
+            },
+            "metrics": {},
+            "pass_criteria": [
+                "page receives task_response",
+                "outer success is true",
+                "TaskResult.success is false",
+                "no project files are changed",
+                "no checkpoint is created"
+            ]
+        },
+        {
+            "id": "PA-01",
+            "name": "Page API successful task",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "task": {
+                    "task_id": "PA-01-TASK-001",
+                    "description": "Page API successful task test.",
+                    "edits": [
+                        {
+                            "type": "create",
+                            "path": "pa01_page_api_probe.txt",
+                            "content": "PA-01 Page API test.\n"
+                        }
+                    ],
+                    "expected_paths": [
+                        "pa01_page_api_probe.txt"
+                    ]
+                }
+            },
+            "actions": [
+                "call window.SimulationAgentBridge.sendTask(task) in page world",
+                "await the returned Promise",
+                "verify resolved TaskResult",
+                "verify probe file creation",
+                "remove probe file",
+                "remove checkpoint state"
+            ],
+            "expected": {
+                "bridge": {
+                    "promise_resolved": true
+                },
+                "task": {
+                    "success": true,
+                    "stage": "COMPLETE"
+                },
+                "filesystem": {
+                    "probe_created": true
+                }
+            },
+            "invariants": [
+                "Page API generates request_id internally",
+                "Page API does not expose transport details to the caller",
+                "resolved Promise contains TaskResult",
+                "successful Task completes without rollback"
+            ],
+            "oracle": {
+                "result_success": true,
+                "result_stage": "COMPLETE",
+                "result_diff_validated": true,
+                "result_rollback_result": null
+            },
+            "metrics": {
+                "page_api_round_trip": "milliseconds",
+                "task_elapsed": "seconds"
+            },
+            "pass_criteria": [
+                "sendTask returns a Promise",
+                "Promise resolves successfully",
+                "TaskResult.success is true",
+                "TaskResult.stage is COMPLETE",
+                "TaskResult.diff_validated is true",
+                "probe file is created",
+                "test cleanup restores clean state"
+            ]
+        },
+        {
+            "id": "PA-02",
+            "name": "Page API transport failure",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "scenario": "transport_failure"
+            },
+            "actions": [
+                "create a Page API request that reaches the Bridge transport layer",
+                "force transport failure before a task response is delivered",
+                "await the returned Promise",
+                "verify that the Promise rejects"
+            ],
+            "expected": {
+                "bridge": {
+                    "promise_rejected": true
+                },
+                "task": {
+                    "result_received": false
+                },
+                "filesystem": {
+                    "changed": false
+                }
+            },
+            "invariants": [
+                "transport failure rejects the Page API Promise",
+                "transport failure is not returned as TaskResult.success false",
+                "no project transaction is created"
+            ],
+            "oracle": {
+                "error.code": "BRIDGE_REQUEST_FAILED"
+            },
+            "metrics": {
+                "page_api_round_trip": "milliseconds"
+            },
+            "pass_criteria": [
+                "sendTask returns a Promise",
+                "Promise rejects",
+                "rejection is classified as a Bridge transport failure",
+                "no project files are changed",
+                "no checkpoint is created"
+            ]
+        },
+        {
+            "id": "PA-03",
+            "name": "Page API local invalid task rejection",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "invalid_tasks": [
+                    null,
+                    [],
+                    "invalid-task"
+                ]
+            },
+            "actions": [
+                "call sendTask with null",
+                "call sendTask with an array",
+                "call sendTask with a string",
+                "await each returned Promise",
+                "verify every Promise rejects locally"
+            ],
+            "expected": {
+                "bridge": {
+                    "requests_sent": false
+                },
+                "task": {
+                    "agent_invoked": false
+                },
+                "filesystem": {
+                    "changed": false
+                }
+            },
+            "invariants": [
+                "Page API rejects null locally",
+                "Page API rejects arrays locally",
+                "Page API rejects primitive task values locally",
+                "invalid local input does not enter the Bridge transport"
+            ],
+            "oracle": {
+                "error.code": "INVALID_TASK"
+            },
+            "metrics": {
+                "local_rejection": "milliseconds"
+            },
+            "pass_criteria": [
+                "all invalid inputs return rejected Promises",
+                "all rejections use INVALID_TASK",
+                "no task reaches SimulationAgent",
+                "no project files are changed",
+                "no checkpoint is created"
+            ]
+        },
+        {
+            "id": "PA-04",
+            "name": "Page API timeout",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "scenario": "response_suppressed",
+                "timeout": 100
+            },
+            "actions": [
+                "create a Page API request",
+                "prevent a matching task_response from being delivered",
+                "await sendTask with the specified timeout",
+                "verify timeout rejection"
+            ],
+            "expected": {
+                "bridge": {
+                    "promise_rejected": true
+                },
+                "task": {
+                    "result_received": false
+                },
+                "filesystem": {
+                    "changed": false
+                }
+            },
+            "invariants": [
+                "timeout rejects the pending Promise",
+                "timeout removes the pending request",
+                "timeout does not create a TaskResult"
+            ],
+            "oracle": {
+                "error.code": "TIMEOUT"
+            },
+            "metrics": {
+                "timeout": "milliseconds"
+            },
+            "pass_criteria": [
+                "Promise rejects",
+                "rejection code is TIMEOUT",
+                "pending request is no longer active",
+                "no project files are changed"
+            ]
+        },
+        {
+            "id": "PA-05",
+            "name": "Page API concurrent request correlation",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true
+            },
+            "input": {
+                "scenario": "two_concurrent_page_api_requests"
+            },
+            "actions": [
+                "start two Page API sendTask calls without awaiting either",
+                "capture both generated request IDs through intercepted page requests",
+                "deliver the two responses in reverse order",
+                "await both Promises",
+                "verify each Promise received the response belonging to its own request ID"
+            ],
+            "expected": {
+                "bridge": {
+                    "concurrent_requests": 2,
+                    "both_promises_resolved": true,
+                    "responses_correlated": true
+                }
+            },
+            "invariants": [
+                "Each Page API request has an independent request_id",
+                "Response order does not determine Promise ownership",
+                "A response resolves only the Promise with the matching request_id"
+            ],
+            "oracle": {
+                "requests": 2,
+                "responses_correlated": true,
+                "both_promises_resolved": true
+            },
+            "metrics": {
+                "page_api_concurrency": "2 requests"
+            },
+            "pass_criteria": [
+                "two requests are pending simultaneously",
+                "two distinct request IDs are generated",
+                "responses are delivered in reverse order",
+                "both Promises resolve",
+                "each Promise receives its matching response"
+            ]
+        },
+        {
+            "id": "PA-06",
+            "name": "Page API concurrent mixed outcomes",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true
+            },
+            "input": {
+                "scenario": "concurrent_mixed_outcomes"
+            },
+            "actions": [
+                "start two Page API sendTask calls without awaiting either",
+                "capture both generated request IDs",
+                "deliver a successful TaskResult for one request",
+                "deliver a failed TaskResult for the other request",
+                "await both Promises",
+                "verify both Promises resolve rather than reject",
+                "verify each resolved result belongs to the correct request"
+            ],
+            "expected": {
+                "bridge": {
+                    "concurrent_requests": 2,
+                    "both_promises_resolved": true,
+                    "mixed_results_preserved": true
+                }
+            },
+            "invariants": [
+                "TaskResult.success does not determine Promise rejection",
+                "Promise rejection is reserved for Bridge or transport failure",
+                "Concurrent responses remain independently correlated"
+            ],
+            "oracle": {
+                "requests": 2,
+                "both_promises_resolved": true,
+                "successful_result_preserved": true,
+                "failed_result_preserved": true
+            },
+            "metrics": {
+                "page_api_concurrency": "2 requests"
+            },
+            "pass_criteria": [
+                "two requests are pending simultaneously",
+                "one TaskResult has success=true",
+                "one TaskResult has success=false",
+                "both Promises resolve",
+                "the two results remain correctly correlated"
+            ]
+        },
+        {
+            "id": "PA-07",
+            "name": "Page API reuse after completion",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "tasks": [
+                    {
+                        "task_id": "PA-07-A",
+                        "description": "PA-07 task A.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "pa07_a.txt",
+                                "content": "PA-07 A.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "pa07_a.txt"
+                        ]
+                    },
+                    {
+                        "task_id": "PA-07-B",
+                        "description": "PA-07 task B.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "pa07_b.txt",
+                                "content": "PA-07 B.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "pa07_b.txt"
+                        ]
+                    },
+                    {
+                        "task_id": "PA-07-C",
+                        "description": "PA-07 task C.",
+                        "edits": [
+                            {
+                                "type": "create",
+                                "path": "pa07_c.txt",
+                                "content": "PA-07 C.\n"
+                            }
+                        ],
+                        "expected_paths": [
+                            "pa07_c.txt"
+                        ]
+                    }
+                ]
+            },
+            "actions": [
+                "send and await task A",
+                "send and await task B",
+                "send and await task C",
+                "verify all three requests complete independently"
+            ],
+            "expected": {
+                "bridge": {
+                    "promises_resolved": 3
+                },
+                "task": {
+                    "successful_results": 3
+                },
+                "filesystem": {
+                    "probe_files_created": 3
+                }
+            },
+            "invariants": [
+                "completed requests are removed from Page API pending state",
+                "subsequent requests remain functional",
+                "request identifiers remain independent"
+            ],
+            "oracle": {
+                "results.successful": 3
+            },
+            "metrics": {
+                "sequential_round_trip": "milliseconds"
+            },
+            "pass_criteria": [
+                "all three Promises resolve",
+                "all three TaskResults are successful",
+                "all three probe files are created",
+                "cleanup restores clean state"
+            ]
+        },
+        {
+            "id": "PA-08",
+            "name": "Page API TaskResult integrity",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "task": {
+                    "task_id": "PA-08-TASK-001",
+                    "description": "PA-08 TaskResult integrity test.",
+                    "edits": [
+                        {
+                            "type": "create",
+                            "path": "pa08_page_api_probe.txt",
+                            "content": "PA-08 Page API test.\n"
+                        }
+                    ],
+                    "expected_paths": [
+                        "pa08_page_api_probe.txt"
+                    ]
+                }
+            },
+            "actions": [
+                "call sendTask(task)",
+                "await the Promise",
+                "inspect the resolved TaskResult",
+                "verify all required TaskResult fields are preserved"
+            ],
+            "expected": {
+                "bridge": {
+                    "promise_resolved": true
+                },
+                "task": {
+                    "success": true,
+                    "stage": "COMPLETE"
+                }
+            },
+            "invariants": [
+                "Page API does not transform TaskResult semantics",
+                "Page API does not discard TaskResult fields",
+                "resolved object remains usable by the caller"
+            ],
+            "oracle": {
+                "result.success": true,
+                "result.stage": "COMPLETE",
+                "result.diff_validated": true,
+                "result.rollback_result": null,
+                "result_fields_complete": true
+            },
+            "metrics": {
+                "page_api_round_trip": "milliseconds"
+            },
+            "pass_criteria": [
+                "Promise resolves",
+                "TaskResult.success is true",
+                "TaskResult.stage is COMPLETE",
+                "TaskResult.diff_validated is true",
+                "all required TaskResult fields are present",
+                "probe file is created",
+                "cleanup restores clean state"
+            ]
+        },
+        {
+            "id": "PA-09",
+            "name": "Page API foreign response isolation",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "scenario": "foreign_response"
+            },
+            "actions": [
+                "create a pending Page API request",
+                "inject a task_response with an unrelated request_id",
+                "verify the pending Promise remains unresolved",
+                "deliver the legitimate response",
+                "verify the original Promise resolves"
+            ],
+            "expected": {
+                "bridge": {
+                    "foreign_response_ignored": true,
+                    "legitimate_response_resolved": true
+                }
+            },
+            "invariants": [
+                "only a matching request_id may resolve a pending Promise",
+                "foreign responses do not alter unrelated pending state",
+                "ignored responses do not produce an exception"
+            ],
+            "oracle": {
+                "foreign_response_ignored": true,
+                "legitimate_response_resolved": true
+            },
+            "metrics": {
+                "response_dispatch": "milliseconds"
+            },
+            "pass_criteria": [
+                "foreign response does not resolve the pending Promise",
+                "legitimate response resolves the Promise",
+                "no project state is corrupted"
+            ]
+        },
+        {
+            "id": "PA-10",
+            "name": "Page API late response after timeout",
+            "level": "PA",
+            "regression": true,
+            "setup": {
+                "browser": "Edge",
+                "extension_loaded": true,
+                "chatgpt_page_loaded": true,
+                "native_host_available": true,
+                "clean_simulationzero_repository": true,
+                "no_checkpoint": true
+            },
+            "input": {
+                "scenario": "late_response_after_timeout",
+                "timeout": 100
+            },
+            "actions": [
+                "create a Page API request",
+                "allow the request to timeout",
+                "verify TIMEOUT rejection",
+                "deliver a late task_response for the timed-out request",
+                "verify the late response is ignored",
+                "send a new valid task",
+                "verify the new request completes successfully"
+            ],
+            "expected": {
+                "bridge": {
+                    "timeout_rejected": true,
+                    "late_response_ignored": true,
+                    "subsequent_request_resolved": true
+                }
+            },
+            "invariants": [
+                "timed-out requests are removed from pending state",
+                "late responses cannot resolve timed-out requests",
+                "late responses cannot corrupt later requests"
+            ],
+            "oracle": {
+                "timeout_error.code": "TIMEOUT",
+                "late_response_ignored": true,
+                "subsequent_request_success": true
+            },
+            "metrics": {
+                "timeout": "milliseconds",
+                "subsequent_round_trip": "milliseconds"
+            },
+            "pass_criteria": [
+                "first Promise rejects with TIMEOUT",
+                "late response is ignored",
+                "subsequent valid request resolves",
+                "subsequent TaskResult is successful",
+                "cleanup restores clean state"
+            ]
+        }
+    ]
+}

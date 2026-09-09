@@ -1,0 +1,36 @@
+{
+    "manifest_version":  3,
+    "name":  "SimulationAgent Bridge",
+    "version":  "0.1.0",
+    "description":  "Bridge between ChatGPT and the local SimulationAgent.",
+    "permissions":  [
+                        "nativeMessaging"
+                    ],
+    "host_permissions":  [
+                             "https://chatgpt.com/*"
+                         ],
+    "background":  {
+                       "service_worker":  "background.js"
+                   },
+    "content_scripts":  [
+                            {
+                                "matches":  [
+                                                "https://chatgpt.com/*"
+                                            ],
+                                "js":  [
+                                           "page_api.js"
+                                       ],
+                                "run_at":  "document_idle",
+                                "world":  "MAIN"
+                            },
+                            {
+                                "matches":  [
+                                                "https://chatgpt.com/*"
+                                            ],
+                                "js":  [
+                                           "content.js"
+                                       ],
+                                "run_at":  "document_idle"
+                            }
+                        ]
+}

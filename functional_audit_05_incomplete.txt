@@ -1,0 +1,32 @@
+﻿5. INCOMPLETE / PLACEHOLDER IMPLEMENTATIONS
+======================================================================
+registries\goal_registry.py:24: pass
+registries\handler_registry.py:20: pass
+registries\target_directory.py:15: pass
+runtime\execution_backend.py:51: raise NotImplementedError
+runtime\execution_policy.py:155: pass
+runtime\execution_policy.py:166: pass
+runtime\task_run.py:66: pass
+tests\test_evidence.py:184: pass
+tests\test_evidence_identity.py:66: pass
+tests\test_evidence_identity.py:86: pass
+tests\test_evidence_identity.py:106: pass
+tests\test_evidence_immutability.py:68: pass
+tests\test_evidence_provenance.py:46: pass
+tests\test_evidence_provenance.py:62: pass
+tests\test_evidence_timestamp.py:42: pass
+tests\test_execution.py:458: pass
+tests\test_execution.py:473: pass
+tests\test_execution_parallel_pipeline.py:95: pass
+tests\test_execution_parallelism.py:191: pass
+tests\test_execution_parallelism.py:205: pass
+tests\test_execution_parallelism.py:230: pass
+tests\test_execution_policy.py:218: pass
+tests\test_execution_policy.py:232: pass
+tests\test_task_run.py:251: pass
+tests\test_task_run_contract_audit.py:244: pass
+tests\test_task_run_contract_audit.py:440: pass
+tests\test_task_run_terminal_lifecycle.py:202: pass
+tests\test_task_run_terminal_lifecycle.py:229: pass
+
+======================================================================

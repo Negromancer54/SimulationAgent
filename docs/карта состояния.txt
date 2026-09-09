@@ -1,0 +1,1383 @@
+1. Что вообще за проект
+
+У нас есть два связанных проекта:
+
+SimulationAgent
+        │
+        │ управляет / изменяет / проверяет
+        ▼
+SimulationZero-Cpp
+
+SimulationAgent — Python-агент, задача которого в конечном счёте не просто выполнять команды, а уметь принимать семантически заданную задачу, разрешать её, планировать выполнение, выполнять, собирать доказательства результата и определять, действительно ли задача достигла требуемого состояния.
+
+SimulationZero-Cpp — C++ проект, над которым этот агент должен уметь работать.
+
+Поэтому конечная архитектурная цель:
+
+Семантическая задача
+        ↓
+Разрешение
+        ↓
+Планирование
+        ↓
+Безопасное исполнение
+        ↓
+Работа с реальным проектом
+        ↓
+Наблюдение результата
+        ↓
+Доказательство
+        ↓
+Проверка ожидаемого результата
+        ↓
+Финальный исход
+2. Главный принцип разработки
+
+Мы уже прошли важнейший переход:
+
+сначала строим механизм, потом подключаем к нему реальные операции.
+
+То есть нельзя сейчас снова уйти в бесконечное добавление абстракций.
+
+V3 runtime уже очень подробно разработан.
+
+Следующий этап — делать его реально полезным.
+
+3. Stable Task V2 — зафиксированный фундамент
+
+У нас есть стабильный baseline:
+
+Stable Task V2 + Bridge 0.1 Baseline
+
+SimulationAgent:
+
+C:\Users\Gycha\SimulationAgent
+
+SimulationZero:
+
+C:\Users\Gycha\SimulationZero-Cpp
+
+Зафиксированный commit SimulationZero:
+
+70bee4cfde496831e655f9c507dd243bdd0d1421
+
+На момент фиксации рабочее дерево было чистым.
+
+4. Task V2
+
+V2 — это не временный черновик, а стабильный compatibility baseline.
+
+Главная структура:
+
+Task
+├── task_id
+├── description
+├── edits
+└── expected_paths
+
+edits поддерживает:
+
+create
+    path
+    content
+
+replace
+    path
+    old_text
+    new_text
+    expected_count?
+
+Ключевые правила:
+
+path — непустая строка;
+content может быть пустым;
+old_text не может быть пустым;
+new_text может быть пустым;
+expected_count — либо отсутствует, либо положительное целое;
+bool нельзя использовать как expected_count;
+несколько edits разрешены;
+несколько edits могут обращаться к одному пути;
+возможен create → replace того же пути.
+
+expected_paths имеет важную семантику:
+
+expected_paths == []
+        ↓
+нет path oracle
+
+То есть пустой список не означает «изменений быть не должно».
+
+При непустом expected_paths сравнивается точное множество изменённых путей.
+
+5. V2 transactional execution
+
+Рабочая V2 цепочка:
+
+TASK
+ ↓
+PRECHECK
+ ↓
+CHECKPOINT
+ ↓
+EDIT
+ ↓
+DIFF
+ ↓
+DIFF VALIDATION
+ ↓
+BUILD
+ ↓
+RUN
+ ↓
+COMPLETE
+
+При отказе после checkpoint:
+
+FAILURE
+   ↓
+ROLLBACK
+
+Причём rollback является частью архитектурного контракта, а не просто удобной функцией.
+
+TaskResult унифицирован и всегда возвращается через run_task / fail_task.
+
+6. Bridge 0.1
+
+Bridge уже стабилизирован:
+
+Page API
+   ↓
+Bridge
+   ↓
+Native Messaging
+   ↓
+host.py
+   ↓
+agent.Task
+   ↓
+agent.run_task()
+   ↓
+TaskResult
+   ↓
+Bridge
+   ↓
+Page API
+
+Bridge baseline:
+
+36 / 36 PASS
+
+Разбивка:
+
+B  = 13
+P  = 10
+E  = 3
+PA = 10
+
+PA-01 — полноценный E2E сценарий.
+
+И очень важно:
+
+Bridge сейчас работает через legacy/V2 executor.
+
+Мы не должны ломать этот контур ради V3.
+
+7. Task V3 — уже не V2
+
+V3 был создан как семантический контракт, не привязанный непосредственно к SimulationZero.
+
+Основная структура:
+
+TaskV3
+├── schema_version
+├── task_id
+├── description
+├── intent
+├── preconditions
+├── expected
+├── validation
+└── execution_policy
+8. TaskIntent
+TaskIntent
+├── operation
+├── target
+└── goal
+
+Operation — закрытый набор:
+
+CHANGE
+VERIFY
+INSPECT
+MIGRATE
+
+Intent не содержит:
+
+edits
+expected state
+validation
+rollback
+shell commands
+execution policy
+
+То есть intent описывает что нужно сделать по смыслу, а не каким конкретно способом.
+
+9. Target
+TaskTarget
+├── kind
+├── identifier
+└── scope
+
+kind:
+
+PROJECT
+FILE
+SYMBOL
+SUBSYSTEM
+TEST
+
+Target — это адрес, а не поисковый запрос.
+
+10. Goal
+TaskGoal
+├── kind
+├── identifier
+├── version
+└── parameters
+
+Goal identifier должен быть зарегистрирован.
+
+Если неизвестен:
+
+RESOLUTION.UNKNOWN_GOAL
+
+GoalSpec:
+
+GoalSpec
+├── identifier
+├── kind
+├── version
+├── parameter_schema
+└── semantic_contract
+
+Но:
+
+GoalRegistry сам не обязан валидировать parameters.
+
+Это намеренно разделено между слоями.
+
+11. GoalRegistry
+
+Production-файл:
+
+registries/goal_registry.py
+
+Возможности:
+
+register()
+contains()
+resolve()
+list_versions()
+deprecate()
+disable()
+
+GoalRegistry сейчас существует архитектурно и протестирован.
+
+Но production bootstrap конкретных целей пока отсутствует.
+
+12. GoalResolver
+registries/goal_resolver.py
+
+Он делает:
+
+structural validation Goal;
+проверяет identifier;
+проверяет version;
+проверяет, что parameters — dict;
+разрешает (identifier, version) через GoalRegistry.
+
+Он не выполняет semantic validation parameters.
+
+13. Handler system
+
+Есть:
+
+registries/handler_registry.py
+registries/handler_resolver.py
+
+HandlerSpec:
+
+HandlerSpec
+├── handler_id
+├── required_capabilities
+├── execution_policy
+└── applicability
+
+HandlerResolver учитывает:
+
+Goal
+Operation
+Target
+Project
+Environment
+Capability
+Parameter
+
+Используется не числовой priority, а система specificity.
+
+Отношения:
+
+LESS
+EQUIVALENT
+MORE
+INCOMPARABLE
+
+Если остаются несколько максимально специфичных, но несравнимых handlers:
+
+AMBIGUOUS
+
+Эквивалентные profiles разрешаются стабильным tie-break по handler_id.
+
+Это важное решение:
+
+никакой искусственной Priority 0 / 1 / 2 ... системы нет.
+
+14. HandlerRuntimeContext
+
+Существует:
+
+HandlerRuntimeContext
+
+Он предназначен для runtime environment/capabilities.
+
+Он не должен превращаться в контейнер произвольных аргументов операции.
+
+Это отдельный архитектурный принцип.
+
+15. ExecutionPlan
+
+Файл:
+
+runtime/execution_plan.py
+
+Есть:
+
+ResourceRequirements
+PlanStep
+ExecutionPlan
+ExecutionPlanner
+
+PlanStep содержит:
+
+step_id
+handler_id
+target_kind
+target_identifier
+goal_identifier
+goal_version
+depends_on
+resources
+
+Это важно.
+
+PlanStep пока не содержит отдельно Goal.parameters.
+
+При этом сам ExecutionPlan сохраняет исходный task.
+
+Мы специально обнаружили этот участок как потенциальную точку интеграции:
+
+TaskGoal.parameters
+        ↓
+ExecutionPlan
+        ↓
+PlanStep / handler
+
+Но это пока не следует самовольно превращать в новый огромный контекст.
+
+Сначала необходимо определить минимальный production design.
+
+16. Preconditions
+
+Файл:
+
+runtime/preconditions.py
+
+Есть:
+
+PreconditionRegistry
+PreconditionEvaluator
+PreconditionContext
+PreconditionsResult
+
+Есть различие:
+
+applicability
+        ≠
+precondition
+
+Precondition должна быть истинна до исполнения.
+
+Эффективные preconditions используют AND semantics.
+
+Failure precondition:
+
+execution NOT started
+17. Execution Policy
+
+Файл:
+
+runtime/execution_policy.py
+
+Есть:
+
+ExecutionPolicy
+HandlerExecutionPolicy
+TransactionExecutionPolicy
+RuntimeExecutionLimits
+EffectiveExecutionPolicy
+ExecutionPolicyResolver
+
+Итоговая policy:
+
+Task
+ ∩
+Handler
+ ∩
+Runtime
+ ∩
+Transaction
+
+Причём intersection ограничивает возможности, но не расширяет их.
+
+Конфликт режимов вроде:
+
+Handler = ABORT
+Transaction = CONTINUE
+
+считается конфликтом policy.
+
+18. Scheduler
+runtime/scheduler.py
+
+Есть:
+
+ScheduledBatch
+ExecutionSchedule
+Scheduler
+
+Учитываются:
+
+зависимости;
+max_workers;
+deterministic order.
+
+Cyclic dependencies отвергаются.
+
+19. Execution backend
+
+Есть общий интерфейс:
+
+runtime/execution_backend.py
+
+и реализации:
+
+SequentialBackend
+ParallelExecutionBackend
+
+ExecutionRuntime делегирует фактическое выполнение шагов backend'у.
+
+20. Parallel execution
+
+Отдельно существует:
+
+runtime/parallel_batch_executor.py
+runtime/parallel_execution_backend.py
+
+Есть чёткий контракт:
+
+параллельные независимые шаги реально могут выполняться одновременно;
+результат сохраняет deterministic order;
+retry повторяет только failed step;
+успешные соседние шаги повторно не запускаются;
+infrastructure error не retry;
+cancellation не retry.
+21. Resource system
+
+Есть:
+
+runtime/resource_admission.py
+
+и ResourceRequirements в plan.
+
+Resource admission проверяет:
+
+step.resources
+       ≤
+available limits
+
+Причём:
+
+capabilities ≠ resources
+
+Это две независимые вещи.
+
+Важно: ResourceAdmission работает с ресурсами шага, а не с каким-либо «магическим» чтением resources из policy.
+
+22. Timeout / Clock
+
+Есть:
+
+runtime/clock.py
+
+Поддерживаются:
+
+MonotonicClock
+ManualClock
+
+Timeout работает через deadline.
+
+Он проверяется:
+
+до исполнения;
+между попытками;
+в соответствующих точках runtime pipeline.
+23. Retry
+
+Retry сейчас является step-level, а не повтором всей задачи целиком.
+
+Если:
+
+step A SUCCESS
+step B FAILED
+
+retry должен повторить:
+
+step B
+
+а не заново запускать A.
+
+24. Cancellation
+runtime/cancellation.py
+
+Есть:
+
+CancellationToken
+
+Система cooperative.
+
+То есть token:
+
+может остановить дальнейшее продвижение
+
+но не убивает произвольно уже работающий Python thread.
+
+25. ExecutionRuntime
+
+Файл:
+
+runtime/execution.py
+
+Он теперь отвечает непосредственно за runtime execution semantics.
+
+Он различает:
+
+SUCCESS
+FAILED
+INFRASTRUCTURE_ERROR
+CANCELLED
+BLOCKED
+
+и умеет сохранять:
+
+effective policy
+schedule
+execution steps/results
+26. TaskRun
+
+Файл:
+
+runtime/task_run.py
+
+Есть три независимых измерения:
+
+TaskStatus
+TaskPhase
+TaskIntegrity
+
+То есть мы специально не сводим их в одно enum.
+
+TaskRun также:
+
+хранит task identity;
+ведёт history transitions;
+владеет EvidenceStore;
+становится terminal;
+после terminal не может продолжаться.
+27. Очень важное решение: TaskRun ≠ Retry attempt
+
+У нас теперь:
+
+TaskRun
+
+является самостоятельным lifecycle.
+
+Новый вызов executor:
+
+execute(task)
+
+создаёт новый TaskRun.
+
+Поэтому:
+
+Run #1
+Run #2
+
+независимы.
+
+История, evidence и effective policy одного run не должны загрязнять другой.
+
+28. TaskRunExecutor
+
+Файл:
+
+runtime/task_run_executor.py
+
+Это фактический orchestration слой V3:
+
+Task
+ ↓
+Resolution
+ ↓
+Planning
+ ↓
+Policy
+ ↓
+TaskRun
+ ↓
+Preconditions
+ ↓
+Execution
+ ↓
+Execution Evidence
+ ↓
+Post Execution Evidence
+ ↓
+Expected
+ ↓
+Validation
+ ↓
+Outcome
+29. Evidence
+
+Файл:
+
+runtime/evidence.py
+
+Есть:
+
+EvidenceProvenance
+Evidence
+EvidenceStore
+
+Evidence:
+
+immutable;
+принадлежит конкретному TaskRun;
+имеет identity;
+provenance;
+timestamp;
+status;
+kind.
+
+Evidence разных TaskRun не могут смешиваться.
+
+30. Expected
+
+Файл:
+
+runtime/expected.py
+
+Есть:
+
+ExpectedEvaluator
+ExpectedEvaluation
+
+Поддерживаются как минимум:
+
+STATE
+TEST
+
+А через unified expected evaluation также подключены:
+
+ASSERTION
+CHANGESET
+
+Все required expected conditions имеют AND semantics.
+
+31. Assertions
+runtime/assertions.py
+
+Есть:
+
+AssertionRegistry
+AssertionEvaluator
+AssertionSpec
+AssertionResult
+
+Assertion работает от Evidence и не изменяет EvidenceStore.
+
+32. Changeset
+runtime/changeset.py
+
+Есть:
+
+ChangeRecord
+ChangeSetEvaluator
+ChangeSetEvaluation
+
+Есть режимы:
+
+CONSTRAINED
+EXACT
+
+И change kinds:
+
+ADDED
+MODIFIED
+DELETED
+RENAMED
+
+Это развитие V2 expected_paths в более общем V3 виде.
+
+33. Validation
+runtime/validation.py
+
+Очень важное разделение:
+
+Expected
+    = что должно быть
+
+Evidence
+    = что наблюдалось
+
+Validation
+    = достаточно ли доказательств
+
+Validation не вычисляет новое состояние и не изменяет Evidence.
+
+Успех требует:
+
+all required Expected = SATISFIED
+        AND
+all required Validation = VALID
+34. TaskOutcome
+runtime/task_outcome.py
+
+Финальный семантический вывод.
+
+Он учитывает:
+
+Execution
+Expected
+Validation
+
+Execution failure имеет приоритет над попыткой интерпретировать post-execution branches.
+
+35. Тестовое покрытие
+
+В текущем audit:
+
+Python files = 106
+pytest functions = 561
+
+Есть отдельные группы тестов почти на каждый V3 слой:
+
+Task V3
+Goal
+Target
+Handler
+Plan
+Preconditions
+Policy
+Resources
+Scheduler
+Execution
+Backend
+Parallelism
+Retry
+Timeout
+Cancellation
+Evidence
+Expected
+Assertion
+Changeset
+Validation
+TaskOutcome
+TaskRun
+
+То есть V3 runtime не является недостроенным каркасом в смысле базовой логики.
+
+Он наоборот очень сильно покрыт тестами.
+
+36. agent.py — совершенно другой мир
+
+Основной legacy файл:
+
+agent.py
+
+Он до сих пор является реальным исполнителем.
+
+Его основные production primitives:
+
+resolve_project_path()
+is_inside_build()
+
+read_file()
+write_file()
+apply_text_replacement()
+search_source()
+
+build_project()
+run_simulation()
+
+git_command()
+get_git_status_porcelain()
+get_current_commit()
+is_valid_commit()
+
+save_checkpoint()
+load_checkpoint()
+clear_checkpoint()
+
+git_status()
+create_checkpoint()
+show_checkpoint()
+
+git_diff()
+get_git_diff()
+show_all_changes()
+
+rollback_to_checkpoint()
+37. Реальные side effects
+
+agent.py реально делает:
+
+Path.read_text()
+Path.write_text()
+subprocess.run(...)
+git ...
+
+PROJECT_ROOT:
+
+C:\Users\Gycha\SimulationZero-Cpp
+
+То есть это реальная эксплуатационная система, а не mock.
+
+38. agent_stable_task_v2_baseline.py
+
+Это сохранённый stable copy V2.
+
+Он нужен как контрольный baseline.
+
+Он не должен тихо превращаться в очередную экспериментальную версию.
+
+39. agent_task_v3.py
+
+Это V3 model layer.
+
+Он содержит:
+
+TaskOperation
+TargetKind
+GoalKind
+ExpectedKind
+StateOperator
+TestExpectedStatus
+ChangeSetMode
+ChangeKind
+FailureMode
+RollbackMode
+
+и основные модели:
+
+TaskScope
+TaskTarget
+TaskGoal
+TaskIntent
+StateExpectedParameters
+TestExpectedParameters
+ChangeRecordPath
+RenameChangeRecord
+ChangeSetExpectedParameters
+ExpectedCondition
+Precondition
+EvidenceRequirement
+ValidationSpec
+TimeoutPolicy
+RetryPolicy
+ParallelismPolicy
+ResourcePolicy
+FailurePolicy
+RollbackPolicy
+ExecutionPolicy
+TaskV3
+
+а также serialization/validation:
+
+task_v3_from_dict()
+task_v3_to_dict()
+validate_task_v3()
+40. Bridge
+
+Главная production часть:
+
+bridge/native_host/host.py
+
+Он сейчас делает:
+
+message
+ ↓
+Task V2
+ ↓
+agent.run_task()
+
+То есть Bridge ещё не является V3 execution entry point.
+
+Это нормально на текущей стадии.
+
+41. Bridge tests
+
+bridge/tests/bridge_test_runner.py содержит полноценный тестовый harness.
+
+Он умеет:
+
+запускать native host;
+отправлять native messages;
+получать responses;
+проверять Git state;
+делать cleanup;
+выполнять P/E/PA тесты;
+проверять browser/page side.
+42. Реальный функциональный аудит
+
+Последний functional audit был очень важен.
+
+Он специально исключал:
+
+__pycache__
+.pytest_cache
+файлы "— копия"
+
+из исследования активной кодовой базы.
+
+Это важно, потому что резервные копии нельзя считать production implementations.
+
+43. Главный результат функционального аудита
+
+В проекте существуют два execution worlds.
+
+Реальный legacy path
+Bridge
+ ↓
+host.py
+ ↓
+agent.Task
+ ↓
+agent.run_task()
+ ↓
+реальный filesystem/Git/build/run
+V3 path
+TaskV3
+ ↓
+TargetResolver
+ ↓
+GoalResolver
+ ↓
+HandlerResolver
+ ↓
+ExecutionPlanner
+ ↓
+TaskRunExecutor
+ ↓
+ExecutionRuntime
+ ↓
+handler(step)
+
+Но в production сейчас отсутствует последний реальный мост:
+
+HandlerSpec
+   ↓
+handler_id
+   ↓
+REAL HANDLER
+   ↓
+agent.py primitive
+44. Что реально отсутствует в V3
+
+Не отсутствует runtime.
+
+Не отсутствуют registry.
+
+Не отсутствует scheduler.
+
+Не отсутствует retry.
+
+Не отсутствует cancellation.
+
+Не отсутствуют Expected/Validation.
+
+Не отсутствует TaskRun.
+
+Главное отсутствие:
+
+production Goal bootstrap
+production Handler bootstrap
+production handler implementations
+
+Именно поэтому V3 пока в значительной степени является готовым execution framework, а не полноценной рабочей производственной системой.
+
+45. Почему component.add_generic_api особенно интересен
+
+Он уже фигурирует как настоящий смысловой goal:
+
+component.add_generic_api@1
+
+и связан с SimulationZero/ComponentManager.
+
+Но сейчас он появляется преимущественно в тестовых composition roots.
+
+То есть:
+
+Goal definition
+        ✅
+
+Production registration
+        ❌
+
+И это потенциально хороший кандидат для первого реального vertical slice.
+
+Но это всё ещё должно быть подтверждено тем production code, который мы выберем.
+
+46. Текущее состояние параметров Goal
+
+Существуют:
+
+GoalSpec.parameter_schema
+TaskGoal.parameters
+
+но для обнаруженных конкретных test GoalSpec:
+
+parameter_schema = None
+
+И это не следует считать автоматически ошибкой архитектуры.
+
+Это пока extension point.
+
+Поэтому мы не должны сейчас самовольно создавать:
+
+GoalParameterValidator
+
+только потому, что увидели parameter_schema.
+
+47. Главный текущий technical gap
+
+Вот текущая точка:
+
+TaskV3
+  ↓
+Target Resolution
+  ↓
+Goal Resolution
+  ↓
+Handler Resolution
+  ↓
+ExecutionPlan
+  ↓
+TaskRunExecutor
+  ↓
+ExecutionRuntime
+  ↓
+handlers[handler_id]
+  ↓
+??? REAL OPERATION
+
+И одновременно:
+
+agent.py
+  ↓
+read/write/edit/build/run/git/checkpoint/rollback
+
+Нужно соединить именно эти два мира.
+
+48. Что не надо сейчас делать
+
+Не надо:
+
+❌ проектировать новый ExecutionContext
+❌ снова расширять V3 specification
+❌ придумывать новую policy system
+❌ строить ещё один runtime layer
+❌ писать десятки тестов ради количества
+❌ менять V2 semantics
+❌ ломать Bridge
+❌ превращать GoalRegistry в validator параметров
+❌ считать отсутствие production bootstrap архитектурной катастрофой
+49. Что надо делать
+
+Первый настоящий production vertical slice:
+
+TaskV3
+   ↓
+Target
+   ↓
+Goal
+   ↓
+Handler
+   ↓
+ExecutionPlan
+   ↓
+REAL HANDLER
+   ↓
+agent.py primitive
+   ↓
+real side effect
+   ↓
+Evidence
+   ↓
+Expected
+   ↓
+Validation
+   ↓
+TaskOutcome
+50. Принцип первого handler
+
+Не надо сразу обобщать всю систему.
+
+Берём одну существующую реальную операцию из agent.py.
+
+Например потенциально:
+
+read_file
+
+или:
+
+write_file
+
+или:
+
+apply_text_replacement
+
+или другую, которую мы выберем после проверки точного интерфейса.
+
+И доводим её до полностью рабочего:
+
+TaskV3 → REAL EFFECT → VERIFIED RESULT
+51. После первого handler
+
+Только после первого реального handler становится понятно, что действительно необходимо для общего adapter API.
+
+Тогда можно переходить к:
+
+handler #2
+handler #3
+...
+
+и обобщать только реально повторяющуюся структуру.
+
+52. Дальнейший крупный план
+
+После production integration:
+
+Phase 1
+Real handler bridge
+        ↓
+Phase 2
+Production Goal/Handler bootstrap
+        ↓
+Phase 3
+несколько реальных agent.py operations
+        ↓
+Phase 4
+полноценный V3 → SimulationZero workflow
+        ↓
+Phase 5
+переход к Zero Stage
+53. SimulationZero-Cpp
+
+Отдельно восстановлен фундамент самого Zero Stage.
+
+Основные системы:
+
+EntityIdentity
+EntityDirectory
+EntityCoreStorage
+ComponentStorage
+AggregateStorage
+RepresentationManager
+EventSystem
+
+Архитектурная идея:
+
+Logical World
+      ↓
+    Entity
+      ↓
+Procedural
+Aggregate
+Materialized
+Detailed
+
+Ключевой принцип:
+
+runtime representation не равна самой logical entity.
+
+То есть одна и та же сущность может менять физическое runtime-представление без потери identity/history.
+
+54. Representation / LOD принцип
+
+Мир не обязан существовать в одинаковой детализации всё время.
+
+Условно:
+
+LOD 0
+aggregate/procedural representation
+
+LOD 1
+expanded aggregate
+
+LOD 2
+specific entities
+
+LOD 3
+detailed entity
+
+Это фундаментальная идея Zero Stage.
+
+55. Entity API, который уже обсуждался
+
+В Zero Stage мы уже прошли следующие архитектурные решения:
+
+EntityHandle
+LogicalEntityID
+EntityAddress
+EntityRef
+EntityDirectory
+EntityCoreStorage
+ComponentStorage
+ComponentMask
+TypeRegistry
+Aggregate Storage
+RepresentationDirectory
+
+И generic API:
+
+World::AddComponent<T>()
+World::RemoveComponent<T>()
+World::HasComponent<T>()
+World::GetComponent<T>()
+
+ComponentManager владеет storage, World координирует.
+
+Это уже отдельный восстановленный архитектурный контур и не должен смешиваться с текущей задачей production integration SimulationAgent.
+
+56. Что сейчас является «истиной» проекта
+
+Я бы установил для дальнейшей работы такую иерархию авторитетности:
+
+1. Зафиксированный контракт
+       ↓
+2. Реальный production code
+       ↓
+3. Проверенные тесты
+       ↓
+4. Архитектурные решения из разработки
+       ↓
+5. Гипотезы
+
+То есть если старое наше рассуждение противоречит фактическому коду — сначала проверяем, не устарело ли рассуждение.
+
+57. Самое важное правило нашей дальнейшей работы
+
+Не надо заново спрашивать:
+
+«А не лучше ли нам сейчас сделать ещё одну архитектурную подсистему?»
+
+Сначала проверяем:
+
+что уже существует
+что реально работает
+что реально отсутствует
+
+и только затем меняем минимально необходимое.
+
+58. Где мы буквально остановились
+
+Последняя полностью подтверждённая точка:
+
+V2
+    ✅ stable
+    ✅ Bridge 0.1
+    ✅ real executor
+
+V3 semantic model
+    ✅
+
+V3 resolution
+    ✅
+
+V3 planning
+    ✅
+
+V3 execution runtime
+    ✅
+
+V3 policies
+    ✅
+
+V3 scheduling
+    ✅
+
+V3 retry/timeout/cancellation
+    ✅
+
+V3 evidence/expected/validation
+    ✅
+
+V3 TaskRun
+    ✅
+
+production Goal bootstrap
+    ❌
+
+production Handler bootstrap
+    ❌
+
+real handler adapter
+    ❌
+
+Именно последняя тройка — текущая рабочая зона.
+
+59. С чего я теперь могу продолжить работу
+
+Конкретно:
+
+SimulationAgent
+        ↓
+выбрать первый production Goal
+        ↓
+определить его HandlerSpec
+        ↓
+определить минимальный adapter к agent.py
+        ↓
+решить передачу конкретных arguments без нарушения существующих границ
+        ↓
+зарегистрировать Goal + Handler
+        ↓
+выполнить реальную операцию через V3
+        ↓
+получить Evidence
+        ↓
+проверить Expected + Validation
+        ↓
+добавить интеграционный regression test
+
+И после этого перейти ко второй реальной операции.

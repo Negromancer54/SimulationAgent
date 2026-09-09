@@ -1,0 +1,781 @@
+﻿4. HANDLER / CAPABILITY SEARCH
+======================================================================
+agent_task_v3.py:289: execution_policy: ExecutionPolicy | None = None
+agent_task_v3.py:366: execution_policy_data = data.get("execution_policy")
+agent_task_v3.py:368: execution_policy = None
+agent_task_v3.py:370: if execution_policy_data is not None:
+agent_task_v3.py:371: timeout_data = execution_policy_data["timeout"]
+agent_task_v3.py:372: retry_data = execution_policy_data.get("retry", {})
+agent_task_v3.py:373: parallelism_data = execution_policy_data.get("parallelism", {})
+agent_task_v3.py:374: resources_data = execution_policy_data.get("resources", {})
+agent_task_v3.py:375: failure_data = execution_policy_data.get("failure", {})
+agent_task_v3.py:376: rollback_data = execution_policy_data.get("rollback", {})
+agent_task_v3.py:378: execution_policy = ExecutionPolicy(
+agent_task_v3.py:414: execution_policy=execution_policy,
+agent_task_v3.py:501: "execution_policy": None,
+agent_task_v3.py:534: if task.execution_policy is not None:
+agent_task_v3.py:535: policy = task.execution_policy
+agent_task_v3.py:537: result["execution_policy"] = {
+registries\handler_registry.py:11: from runtime.execution_policy import HandlerExecutionPolicy
+registries\handler_registry.py:62: handler_id: str
+registries\handler_registry.py:66: required_capabilities: tuple[str, ...] = ()
+registries\handler_registry.py:67: execution_policy: HandlerExecutionPolicy | None = None
+registries\handler_registry.py:74: "required_capabilities",
+registries\handler_registry.py:75: tuple(sorted(set(self.required_capabilities))),
+registries\handler_registry.py:103: not isinstance(spec.handler_id, str)
+registries\handler_registry.py:104: or not spec.handler_id.strip()
+registries\handler_registry.py:107: "HandlerSpec.handler_id must be a non-empty string."
+registries\handler_registry.py:145: for capability in spec.required_capabilities:
+registries\handler_registry.py:151: "HandlerSpec.required_capabilities must contain "
+registries\handler_registry.py:158: if spec.handler_id in self._handlers:
+registries\handler_registry.py:160: f"Handler is already registered: {spec.handler_id}"
+registries\handler_registry.py:163: self._handlers[spec.handler_id] = spec
+registries\handler_registry.py:165: def contains(self, handler_id: str) -> bool:
+registries\handler_registry.py:166: return handler_id in self._handlers
+registries\handler_registry.py:168: def get(self, handler_id: str) -> HandlerSpec | None:
+registries\handler_registry.py:169: return self._handlers.get(handler_id)
+registries\handler_registry.py:176: handlers = [
+registries\handler_registry.py:185: handlers.sort(key=lambda handler: handler.handler_id)
+registries\handler_registry.py:190: handler_id: str,
+registries\handler_registry.py:192: handler = self._require(handler_id)
+registries\handler_registry.py:194: self._handlers[handler_id] = HandlerSpec(
+registries\handler_registry.py:195: handler_id=handler.handler_id,
+registries\handler_registry.py:199: required_capabilities=handler.required_capabilities,
+registries\handler_registry.py:200: execution_policy=handler.execution_policy,
+registries\handler_registry.py:207: handler_id: str,
+registries\handler_registry.py:209: handler = self._require(handler_id)
+registries\handler_registry.py:211: self._handlers[handler_id] = HandlerSpec(
+registries\handler_registry.py:212: handler_id=handler.handler_id,
+registries\handler_registry.py:216: required_capabilities=handler.required_capabilities,
+registries\handler_registry.py:217: execution_policy=handler.execution_policy,
+registries\handler_registry.py:222: def _require(self, handler_id: str) -> HandlerSpec:
+registries\handler_registry.py:223: handler = self._handlers.get(handler_id)
+registries\handler_registry.py:227: f"Unknown handler: {handler_id}"
+registries\handler_resolver.py:57: 5. stable handler_id tie-break for equivalent profiles.
+registries\handler_resolver.py:159: return set(handler.required_capabilities).issubset(
+registries\handler_resolver.py:313: all_handlers = self._registry.list_for_goal(
+registries\handler_resolver.py:328: active_handlers = [
+registries\handler_resolver.py:422: key=lambda handler: handler.handler_id
+runtime\execution.py:17: from runtime.execution_policy import (
+runtime\execution.py:63: HandlerCallable = Callable[[PlanStep], None]
+runtime\execution.py:288: handlers: dict[str, HandlerCallable],
+runtime\execution_backend.py:23: HandlerCallable = Callable[[PlanStep], None]
+runtime\execution_backend.py:49: handlers: dict[str, HandlerCallable],
+runtime\execution_backend.py:67: handlers: dict[str, HandlerCallable],
+runtime\execution_backend.py:73: step.handler_id
+runtime\execution_backend.py:86: f"for '{step.handler_id}'."
+runtime\execution_plan.py:122: handler_id: str
+runtime\execution_plan.py:176: handler_id=handler.handler_id,
+runtime\execution_plan.py:183: capabilities=handler.required_capabilities,
+runtime\parallel_batch_executor.py:8: HandlerCallable,
+runtime\parallel_batch_executor.py:67: handlers: dict[str, HandlerCallable],
+runtime\parallel_execution_backend.py:13: HandlerCallable,
+runtime\parallel_execution_backend.py:40: handlers: dict[str, HandlerCallable],
+runtime\parallel_execution_backend.py:75: step.handler_id
+runtime\parallel_execution_backend.py:88: f"handler id '{step.handler_id}'."
+runtime\resource_admission.py:7: from runtime.execution_policy import ResourcePolicy
+runtime\task_run.py:14: from runtime.execution_policy import EffectiveExecutionPolicy
+runtime\task_run.py:96: effective_execution_policy: EffectiveExecutionPolicy | None = None
+runtime\task_run_executor.py:72: from runtime.execution_policy import (
+runtime\task_run_executor.py:149: self._execution_policy_resolver = (
+runtime\task_run_executor.py:495: resolution.handler_spec.execution_policy
+runtime\task_run_executor.py:501: self._execution_policy_resolver.resolve(
+runtime\task_run_executor.py:502: task.execution_policy,
+runtime\task_run_executor.py:521: run.effective_execution_policy = (
+runtime\task_run_executor.py:562: run.effective_execution_policy,
+tests\test_assertions.py:81: registry.register(
+tests\test_assertions.py:109: registry.register(spec)
+tests\test_assertions.py:112: registry.register(spec)
+tests\test_assertions.py:124: registry.register(
+tests\test_assertions.py:132: registry.register(
+tests\test_assertions.py:158: registry.register(
+tests\test_assertions.py:204: registry.register(
+tests\test_assertions.py:239: registry.register(
+tests\test_assertions.py:290: registry.register(
+tests\test_assertions.py:318: registry.register(
+tests\test_assertions.py:345: registry.register(
+tests\test_assertions.py:379: registry.register(
+tests\test_assertions.py:430: registry.register(
+tests\test_assertions.py:471: registry.register(
+tests\test_assertions.py:514: registry.register(
+tests\test_assertions.py:561: registry.register(
+tests\test_assertions.py:576: registry.register(
+tests\test_assertions.py:626: registry.register(
+tests\test_assertions.py:669: registry.register(spec)
+tests\test_effective_policy_execution.py:43: from runtime.execution_policy import (
+tests\test_effective_policy_execution.py:64: HANDLER_ID = "change.handler"
+tests\test_effective_policy_execution.py:100: directory.register(
+tests\test_effective_policy_execution.py:112: execution_policy: HandlerExecutionPolicy | None = None,
+tests\test_effective_policy_execution.py:114: registry = HandlerRegistry()
+tests\test_effective_policy_execution.py:116: registry.register(
+tests\test_effective_policy_execution.py:117: HandlerSpec(
+tests\test_effective_policy_execution.py:118: handler_id=HANDLER_ID,
+tests\test_effective_policy_execution.py:124: execution_policy=execution_policy,
+tests\test_effective_policy_execution.py:137: goal_registry.register(
+tests\test_effective_policy_execution.py:183: handlers={
+tests\test_effective_policy_execution.py:184: HANDLER_ID: lambda step: None,
+tests\test_effective_policy_execution.py:190: assert result.run.effective_execution_policy is not None
+tests\test_effective_policy_execution.py:195: result.run.effective_execution_policy
+tests\test_effective_policy_execution.py:220: handlers={
+tests\test_effective_policy_execution.py:221: HANDLER_ID: lambda step: None,
+tests\test_effective_policy_execution.py:257: handlers={
+tests\test_effective_policy_execution.py:258: HANDLER_ID: failing_handler,
+tests\test_effective_policy_execution.py:297: handlers={
+tests\test_effective_policy_execution.py:298: HANDLER_ID: failing_handler,
+tests\test_effective_policy_runtime.py:25: from runtime.execution_policy import (
+tests\test_effective_policy_runtime.py:34: HANDLER_ID = "change.handler"
+tests\test_effective_policy_runtime.py:115: handler_id=HANDLER_ID,
+tests\test_effective_policy_runtime.py:155: {HANDLER_ID: lambda step: None},
+tests\test_effective_policy_runtime.py:179: {HANDLER_ID: lambda step: None},
+tests\test_effective_policy_runtime.py:225: {HANDLER_ID: failing_handler},
+tests\test_effective_policy_runtime.py:262: {HANDLER_ID: handler},
+tests\test_evidence_attempt_isolation.py:42: from runtime.execution_policy import (
+tests\test_evidence_attempt_isolation.py:58: HANDLER_ID = "change.handler"
+tests\test_evidence_attempt_isolation.py:94: goal_registry.register(
+tests\test_evidence_attempt_isolation.py:106: target_directory.register(
+tests\test_evidence_attempt_isolation.py:114: handler_registry = HandlerRegistry()
+tests\test_evidence_attempt_isolation.py:116: handler_registry.register(
+tests\test_evidence_attempt_isolation.py:117: HandlerSpec(
+tests\test_evidence_attempt_isolation.py:118: handler_id=HANDLER_ID,
+tests\test_evidence_attempt_isolation.py:175: handlers={
+tests\test_evidence_attempt_isolation.py:176: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:185: handlers={
+tests\test_evidence_attempt_isolation.py:186: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:210: handlers={
+tests\test_evidence_attempt_isolation.py:211: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:220: handlers={
+tests\test_evidence_attempt_isolation.py:221: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:249: handlers={
+tests\test_evidence_attempt_isolation.py:250: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:259: handlers={
+tests\test_evidence_attempt_isolation.py:260: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:294: handlers={
+tests\test_evidence_attempt_isolation.py:295: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:301: handlers={
+tests\test_evidence_attempt_isolation.py:302: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:346: handlers={
+tests\test_evidence_attempt_isolation.py:347: HANDLER_ID: lambda step: None,
+tests\test_evidence_attempt_isolation.py:366: handlers={
+tests\test_evidence_attempt_isolation.py:367: HANDLER_ID: lambda step: None,
+tests\test_evidence_evaluation_contract.py:172: registry.register(
+tests\test_evidence_evaluation_contract.py:211: registry.register(
+tests\test_evidence_evaluation_contract.py:249: registry.register(
+tests\test_evidence_failure_semantics.py:119: registry.register(
+tests\test_execution.py:60: HANDLER_ID = "change.handler"
+tests\test_execution.py:96: goal_registry.register(
+tests\test_execution.py:110: target_directory.register(
+tests\test_execution.py:118: handler_registry = HandlerRegistry()
+tests\test_execution.py:120: handler_registry.register(
+tests\test_execution.py:121: HandlerSpec(
+tests\test_execution.py:122: handler_id=HANDLER_ID,
+tests\test_execution.py:167: registry.register(
+tests\test_execution.py:214: {HANDLER_ID: handler},
+tests\test_execution.py:255: {HANDLER_ID: handler},
+tests\test_execution.py:291: {HANDLER_ID: handler},
+tests\test_execution.py:309: {HANDLER_ID: handler},
+tests\test_execution.py:334: {HANDLER_ID: handler_a},
+tests\test_execution.py:340: {HANDLER_ID: handler_b},
+tests\test_execution.py:361: {HANDLER_ID: handler},
+tests\test_execution.py:375: {HANDLER_ID: lambda step: None},
+tests\test_execution.py:389: {HANDLER_ID: lambda step: None},
+tests\test_execution.py:416: {HANDLER_ID: handler},
+tests\test_execution_backend.py:37: handler_id=f"handler.{step_id}",
+tests\test_execution_backend.py:57: handlers={
+tests\test_execution_backend.py:98: handlers={},
+tests\test_execution_backend.py:126: handlers={
+tests\test_execution_backend.py:162: handlers={
+tests\test_execution_backend.py:180: handlers={},
+tests\test_execution_backend.py:197: handlers={
+tests\test_execution_backend_pipeline.py:38: from runtime.execution_policy import (
+tests\test_execution_backend_pipeline.py:75: handler_id=f"handler.{step_id}",
+tests\test_execution_backend_pipeline.py:124: handlers={
+tests\test_execution_backend_pipeline.py:163: handlers={
+tests\test_execution_backend_pipeline.py:201: handlers={
+tests\test_execution_backend_pipeline.py:233: handlers={
+tests\test_execution_backend_pipeline.py:258: handlers={
+tests\test_execution_cancellation_pipeline.py:35: from runtime.execution_policy import (
+tests\test_execution_cancellation_pipeline.py:59: handler_id="handler.test",
+tests\test_execution_cancellation_pipeline.py:135: handlers={
+tests\test_execution_cancellation_pipeline.py:170: step.handler_id
+tests\test_execution_cancellation_pipeline.py:235: handlers={
+tests\test_execution_cancellation_pipeline.py:338: handlers={
+tests\test_execution_outcome.py:59: HANDLER_ID = "change.handler"
+tests\test_execution_outcome.py:89: goal_registry.register(
+tests\test_execution_outcome.py:101: directory.register(
+tests\test_execution_outcome.py:109: handlers = HandlerRegistry()
+tests\test_execution_outcome.py:111: handlers.register(
+tests\test_execution_outcome.py:112: HandlerSpec(
+tests\test_execution_outcome.py:113: handler_id=HANDLER_ID,
+tests\test_execution_outcome.py:141: handlers={
+tests\test_execution_outcome.py:142: HANDLER_ID: failing_handler
+tests\test_execution_outcome.py:170: handlers={},
+tests\test_execution_outcome.py:202: handlers={
+tests\test_execution_outcome.py:203: HANDLER_ID: failing_handler
+tests\test_execution_outcome.py:223: handlers={
+tests\test_execution_outcome.py:224: HANDLER_ID: lambda step: None
+tests\test_execution_parallel_pipeline.py:30: from runtime.execution_policy import (
+tests\test_execution_parallel_pipeline.py:54: handler_id="handler.test",
+tests\test_execution_parallel_pipeline.py:133: handlers={
+tests\test_execution_parallel_pipeline.py:189: handlers={
+tests\test_execution_parallel_pipeline.py:235: handlers={
+tests\test_execution_parallel_pipeline.py:298: handlers={
+tests\test_execution_parallel_pipeline.py:341: handlers={
+tests\test_execution_parallel_pipeline.py:369: handler_id=step.handler_id,
+tests\test_execution_parallel_pipeline.py:398: handlers={
+tests\test_execution_parallelism.py:39: handler_id=f"handler.{step_id}",
+tests\test_execution_plan.py:58: registry.register(
+tests\test_execution_plan.py:76: directory.register(
+tests\test_execution_plan.py:88: registry = HandlerRegistry()
+tests\test_execution_plan.py:90: registry.register(
+tests\test_execution_plan.py:91: HandlerSpec(
+tests\test_execution_plan.py:92: handler_id="change.handler",
+tests\test_execution_plan.py:98: required_capabilities=(
+tests\test_execution_plan.py:196: assert step.handler_id == "change.handler"
+tests\test_execution_policy.py:24: from runtime.execution_policy import (
+tests\test_execution_policy_aggregation.py:20: from runtime.execution_policy import (
+tests\test_execution_policy_constraints.py:8: from runtime.execution_policy import (
+tests\test_execution_policy_constraints.py:138: def test_handler_spec_preserves_execution_policy():
+tests\test_execution_policy_constraints.py:149: spec = HandlerSpec(
+tests\test_execution_policy_constraints.py:150: handler_id="handler.test",
+tests\test_execution_policy_constraints.py:153: execution_policy=policy,
+tests\test_execution_policy_constraints.py:156: assert spec.execution_policy is policy
+tests\test_execution_policy_constraints.py:159: def test_handler_registry_state_changes_preserve_execution_policy():
+tests\test_execution_policy_constraints.py:171: registry = HandlerRegistry()
+tests\test_execution_policy_constraints.py:173: registry.register(
+tests\test_execution_policy_constraints.py:174: HandlerSpec(
+tests\test_execution_policy_constraints.py:175: handler_id="handler.test",
+tests\test_execution_policy_constraints.py:178: execution_policy=policy,
+tests\test_execution_policy_constraints.py:187: assert disabled.execution_policy is policy
+tests\test_execution_policy_constraints.py:194: assert deprecated.execution_policy is policy
+tests\test_execution_policy_constraints.py:208: test_handler_spec_preserves_execution_policy,
+tests\test_execution_policy_constraints.py:209: test_handler_registry_state_changes_preserve_execution_policy,
+tests\test_execution_policy_pipeline.py:33: from runtime.execution_policy import (
+tests\test_execution_policy_pipeline.py:63: HANDLER_ID = "change.handler"
+tests\test_execution_policy_pipeline.py:90: execution_policy=policy,
+tests\test_execution_policy_pipeline.py:127: goal_registry.register(
+tests\test_execution_policy_pipeline.py:139: directory.register(
+tests\test_execution_policy_pipeline.py:147: handlers = HandlerRegistry()
+tests\test_execution_policy_pipeline.py:149: handlers.register(
+tests\test_execution_policy_pipeline.py:150: HandlerSpec(
+tests\test_execution_policy_pipeline.py:151: handler_id=HANDLER_ID,
+tests\test_execution_policy_pipeline.py:182: handlers={
+tests\test_execution_policy_pipeline.py:183: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:189: assert result.run.effective_execution_policy is not None
+tests\test_execution_policy_pipeline.py:191: effective = result.run.effective_execution_policy
+tests\test_execution_policy_pipeline.py:213: handlers={
+tests\test_execution_policy_pipeline.py:214: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:220: effective = result.run.effective_execution_policy
+tests\test_execution_policy_pipeline.py:237: handlers={
+tests\test_execution_policy_pipeline.py:238: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:244: run_policy = result.run.effective_execution_policy
+tests\test_execution_policy_pipeline.py:261: handlers={
+tests\test_execution_policy_pipeline.py:262: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:268: effective = result.run.effective_execution_policy
+tests\test_execution_policy_pipeline.py:283: handlers={
+tests\test_execution_policy_pipeline.py:284: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:305: handlers={
+tests\test_execution_policy_pipeline.py:306: HANDLER_ID: lambda step: None
+tests\test_execution_policy_pipeline.py:312: effective = result.run.effective_execution_policy
+tests\test_execution_retry.py:34: from runtime.execution_policy import (
+tests\test_execution_retry.py:76: handler_id="handler.test",
+tests\test_execution_retry.py:119: handlers={
+tests\test_execution_retry.py:148: handlers={
+tests\test_execution_retry.py:174: handlers={
+tests\test_execution_retry.py:206: handlers={
+tests\test_execution_retry.py:224: handlers={},
+tests\test_execution_retry.py:247: handlers={
+tests\test_execution_retry_pipeline.py:34: from runtime.execution_policy import RuntimeExecutionLimits
+tests\test_execution_retry_pipeline.py:59: HANDLER_ID = "change.handler"
+tests\test_execution_retry_pipeline.py:86: execution_policy=policy,
+tests\test_execution_retry_pipeline.py:118: directory.register(
+tests\test_execution_retry_pipeline.py:130: registry = HandlerRegistry()
+tests\test_execution_retry_pipeline.py:132: registry.register(
+tests\test_execution_retry_pipeline.py:133: HandlerSpec(
+tests\test_execution_retry_pipeline.py:134: handler_id=HANDLER_ID,
+tests\test_execution_retry_pipeline.py:152: goal_registry.register(
+tests\test_execution_retry_pipeline.py:192: handlers={
+tests\test_execution_retry_pipeline.py:193: HANDLER_ID: handler
+tests\test_execution_retry_pipeline.py:199: assert result.run.effective_execution_policy is not None
+tests\test_execution_retry_pipeline.py:201: result.run.effective_execution_policy.max_attempts
+tests\test_execution_retry_pipeline.py:246: handlers={
+tests\test_execution_retry_pipeline.py:247: HANDLER_ID: handler
+tests\test_execution_retry_pipeline.py:254: assert result.run.effective_execution_policy is not None
+tests\test_execution_retry_pipeline.py:256: result.run.effective_execution_policy.max_attempts
+tests\test_execution_retry_pipeline.py:290: handlers={
+tests\test_execution_retry_pipeline.py:291: HANDLER_ID: handler
+tests\test_execution_retry_pipeline.py:329: def test_effective_policy_and_execution_policy_are_identical_objects():
+tests\test_execution_retry_pipeline.py:336: handlers={
+tests\test_execution_retry_pipeline.py:337: HANDLER_ID: lambda step: None
+tests\test_execution_retry_pipeline.py:343: effective = result.run.effective_execution_policy
+tests\test_execution_retry_pipeline.py:365: handlers={
+tests\test_execution_retry_pipeline.py:366: HANDLER_ID: handler
+tests\test_execution_retry_pipeline.py:389: handlers={
+tests\test_execution_retry_pipeline.py:390: HANDLER_ID: lambda step: None
+tests\test_execution_retry_pipeline.py:407: test_effective_policy_and_execution_policy_are_identical_objects,
+tests\test_execution_schedule_result.py:35: from runtime.execution_policy import (
+tests\test_execution_schedule_result.py:74: handler_id=f"handler.{step_id}",
+tests\test_execution_schedule_result.py:117: handlers={
+tests\test_execution_schedule_result.py:159: handlers={
+tests\test_execution_schedule_result.py:196: handlers={
+tests\test_execution_schedule_result.py:228: handlers={
+tests\test_execution_schedule_result.py:267: handlers={
+tests\test_execution_schedule_result.py:295: handlers={},
+tests\test_execution_scheduler_pipeline.py:36: from runtime.execution_policy import (
+tests\test_execution_scheduler_pipeline.py:75: handler_id=f"handler.{step_id}",
+tests\test_execution_scheduler_pipeline.py:149: handlers={
+tests\test_execution_scheduler_pipeline.py:193: handlers={
+tests\test_execution_scheduler_pipeline.py:218: handlers={
+tests\test_execution_scheduler_pipeline.py:252: handlers={
+tests\test_execution_scheduler_pipeline.py:298: handlers={
+tests\test_execution_scheduler_pipeline.py:327: handlers={
+tests\test_execution_timeout.py:37: from runtime.execution_policy import (
+tests\test_execution_timeout.py:74: handler_id="handler.test",
+tests\test_execution_timeout.py:115: handlers={
+tests\test_execution_timeout.py:137: handlers={
+tests\test_execution_timeout.py:160: handlers={
+tests\test_execution_timeout.py:183: handlers={
+tests\test_execution_timeout.py:215: handlers={
+tests\test_execution_timeout.py:249: handlers={
+tests\test_execution_timeout_pipeline.py:38: from runtime.execution_policy import (
+tests\test_execution_timeout_pipeline.py:65: HANDLER_ID = "change.handler"
+tests\test_execution_timeout_pipeline.py:92: execution_policy=policy,
+tests\test_execution_timeout_pipeline.py:125: directory.register(
+tests\test_execution_timeout_pipeline.py:137: registry = HandlerRegistry()
+tests\test_execution_timeout_pipeline.py:139: registry.register(
+tests\test_execution_timeout_pipeline.py:140: HandlerSpec(
+tests\test_execution_timeout_pipeline.py:141: handler_id=HANDLER_ID,
+tests\test_execution_timeout_pipeline.py:160: goal_registry.register(
+tests\test_execution_timeout_pipeline.py:199: handlers={
+tests\test_execution_timeout_pipeline.py:200: HANDLER_ID: handler
+tests\test_execution_timeout_pipeline.py:207: assert result.run.effective_execution_policy is not None
+tests\test_execution_timeout_pipeline.py:209: result.run.effective_execution_policy.timeout_seconds
+tests\test_execution_timeout_pipeline.py:243: handlers={
+tests\test_execution_timeout_pipeline.py:244: HANDLER_ID: handler
+tests\test_execution_timeout_pipeline.py:251: effective = result.run.effective_execution_policy
+tests\test_execution_timeout_pipeline.py:277: handlers={
+tests\test_execution_timeout_pipeline.py:278: HANDLER_ID: handler
+tests\test_execution_timeout_pipeline.py:318: handlers={
+tests\test_execution_timeout_pipeline.py:319: HANDLER_ID: handler
+tests\test_execution_timeout_pipeline.py:351: handlers={
+tests\test_execution_timeout_pipeline.py:352: HANDLER_ID: lambda step: None
+tests\test_execution_timeout_pipeline.py:358: effective = result.run.effective_execution_policy
+tests\test_execution_timeout_pipeline.py:383: handlers={
+tests\test_execution_timeout_pipeline.py:384: HANDLER_ID: lambda step: None
+tests\test_execution_timeout_pipeline.py:389: assert task.execution_policy is policy
+tests\test_goal_registry.py:26: registry.register(
+tests\test_goal_registry.py:98: registry.register(
+tests\test_goal_registry.py:116: registry.register(
+tests\test_goal_registry.py:182: registry.register(
+tests\test_goal_registry.py:201: registry.register(
+tests\test_goal_resolver.py:27: registry.register(
+tests\test_goal_resolver.py:39: registry.register(
+tests\test_goal_resolver.py:51: registry.register(
+tests\test_handler_policy_pipeline.py:45: from runtime.execution_policy import (
+tests\test_handler_policy_pipeline.py:66: HANDLER_ID = "change.handler"
+tests\test_handler_policy_pipeline.py:102: directory.register(
+tests\test_handler_policy_pipeline.py:114: execution_policy: HandlerExecutionPolicy | None = None,
+tests\test_handler_policy_pipeline.py:116: registry = HandlerRegistry()
+tests\test_handler_policy_pipeline.py:118: registry.register(
+tests\test_handler_policy_pipeline.py:119: HandlerSpec(
+tests\test_handler_policy_pipeline.py:120: handler_id=HANDLER_ID,
+tests\test_handler_policy_pipeline.py:126: execution_policy=execution_policy,
+tests\test_handler_policy_pipeline.py:134: handler_execution_policy: HandlerExecutionPolicy | None = None,
+tests\test_handler_policy_pipeline.py:139: goal_registry.register(
+tests\test_handler_policy_pipeline.py:159: make_handler_registry(handler_execution_policy),
+tests\test_handler_policy_pipeline.py:180: handler_execution_policy=handler_policy,
+tests\test_handler_policy_pipeline.py:186: handlers={
+tests\test_handler_policy_pipeline.py:187: HANDLER_ID: lambda step: None,
+tests\test_handler_policy_pipeline.py:194: policy = result.run.effective_execution_policy
+tests\test_handler_policy_pipeline.py:216: handler_execution_policy=handler_policy,
+tests\test_handler_policy_pipeline.py:222: handlers={
+tests\test_handler_policy_pipeline.py:223: HANDLER_ID: lambda step: None,
+tests\test_handler_policy_pipeline.py:229: policy = result.run.effective_execution_policy
+tests\test_handler_policy_pipeline.py:251: handler_execution_policy=handler_policy,
+tests\test_handler_policy_pipeline.py:257: handlers={
+tests\test_handler_policy_pipeline.py:258: HANDLER_ID: lambda step: None,
+tests\test_handler_policy_pipeline.py:264: policy = result.run.effective_execution_policy
+tests\test_handler_policy_pipeline.py:280: handler_execution_policy=None,
+tests\test_handler_policy_pipeline.py:286: handlers={
+tests\test_handler_policy_pipeline.py:287: HANDLER_ID: lambda step: None,
+tests\test_handler_policy_pipeline.py:293: policy = result.run.effective_execution_policy
+tests\test_handler_policy_pipeline.py:321: handler_execution_policy=handler_policy,
+tests\test_handler_policy_pipeline.py:327: handlers={
+tests\test_handler_policy_pipeline.py:328: HANDLER_ID: lambda step: None,
+tests\test_handler_policy_pipeline.py:334: policy = result.run.effective_execution_policy
+tests\test_handler_resolver.py:79: registry = HandlerRegistry()
+tests\test_handler_resolver.py:81: registry.register(
+tests\test_handler_resolver.py:82: HandlerSpec(
+tests\test_handler_resolver.py:83: handler_id="generic.handler",
+tests\test_handler_resolver.py:108: assert result.handler.handler_id == "generic.handler"
+tests\test_handler_resolver.py:139: registry = HandlerRegistry()
+tests\test_handler_resolver.py:141: registry.register(
+tests\test_handler_resolver.py:142: HandlerSpec(
+tests\test_handler_resolver.py:143: handler_id="change.handler",
+tests\test_handler_resolver.py:167: registry = HandlerRegistry()
+tests\test_handler_resolver.py:169: registry.register(
+tests\test_handler_resolver.py:170: HandlerSpec(
+tests\test_handler_resolver.py:171: handler_id="project.handler",
+tests\test_handler_resolver.py:195: registry = HandlerRegistry()
+tests\test_handler_resolver.py:197: registry.register(
+tests\test_handler_resolver.py:198: HandlerSpec(
+tests\test_handler_resolver.py:199: handler_id="secure.handler",
+tests\test_handler_resolver.py:202: required_capabilities=(
+tests\test_handler_resolver.py:233: registry = HandlerRegistry()
+tests\test_handler_resolver.py:235: registry.register(
+tests\test_handler_resolver.py:236: HandlerSpec(
+tests\test_handler_resolver.py:237: handler_id="generic.handler",
+tests\test_handler_resolver.py:243: registry.register(
+tests\test_handler_resolver.py:244: HandlerSpec(
+tests\test_handler_resolver.py:245: handler_id="change.handler",
+tests\test_handler_resolver.py:262: assert result.handler.handler_id == "change.handler"
+tests\test_handler_resolver.py:266: registry = HandlerRegistry()
+tests\test_handler_resolver.py:268: registry.register(
+tests\test_handler_resolver.py:269: HandlerSpec(
+tests\test_handler_resolver.py:270: handler_id="change.handler",
+tests\test_handler_resolver.py:279: registry.register(
+tests\test_handler_resolver.py:280: HandlerSpec(
+tests\test_handler_resolver.py:281: handler_id="project.handler",
+tests\test_handler_resolver.py:299: def test_equivalent_profiles_use_stable_handler_id() -> None:
+tests\test_handler_resolver.py:300: registry = HandlerRegistry()
+tests\test_handler_resolver.py:302: registry.register(
+tests\test_handler_resolver.py:303: HandlerSpec(
+tests\test_handler_resolver.py:304: handler_id="handler.b",
+tests\test_handler_resolver.py:313: registry.register(
+tests\test_handler_resolver.py:314: HandlerSpec(
+tests\test_handler_resolver.py:315: handler_id="handler.a",
+tests\test_handler_resolver.py:332: assert result.handler.handler_id == "handler.a"
+tests\test_handler_resolver.py:336: registry = HandlerRegistry()
+tests\test_handler_resolver.py:338: registry.register(
+tests\test_handler_resolver.py:339: HandlerSpec(
+tests\test_handler_resolver.py:340: handler_id="change.handler",
+tests\test_handler_resolver.py:349: registry.register(
+tests\test_handler_resolver.py:350: HandlerSpec(
+tests\test_handler_resolver.py:351: handler_id="project.handler",
+tests\test_handler_resolver.py:371: generic = HandlerSpec(
+tests\test_handler_resolver.py:372: handler_id="generic",
+tests\test_handler_resolver.py:377: change = HandlerSpec(
+tests\test_handler_resolver.py:378: handler_id="change",
+tests\test_handler_resolver.py:386: verify = HandlerSpec(
+tests\test_handler_resolver.py:387: handler_id="verify",
+tests\test_handler_resolver.py:395: same_change = HandlerSpec(
+tests\test_handler_resolver.py:396: handler_id="same-change",
+tests\test_handler_resolver.py:440: registry = HandlerRegistry()
+tests\test_handler_resolver.py:442: registry.register(
+tests\test_handler_resolver.py:443: HandlerSpec(
+tests\test_handler_resolver.py:444: handler_id="disabled.handler",
+tests\test_handler_resolver.py:460: registry = HandlerRegistry()
+tests\test_handler_resolver.py:462: registry.register(
+tests\test_handler_resolver.py:463: HandlerSpec(
+tests\test_handler_resolver.py:464: handler_id="deprecated.handler",
+tests\test_handler_resolver.py:516: test_equivalent_profiles_use_stable_handler_id,
+tests\test_parallel_batch_cancellation.py:29: handler_id="handler.test",
+tests\test_parallel_batch_executor.py:34: handler_id="handler.test",
+tests\test_parallel_execution_backend.py:31: handler_id: str = "handler.test",
+tests\test_parallel_execution_backend.py:35: handler_id=handler_id,
+tests\test_parallel_execution_backend.py:176: handler_id="missing",
+tests\test_post_execution_pipeline.py:72: HANDLER_ID = "change.handler"
+tests\test_post_execution_pipeline.py:78: directory.register(
+tests\test_post_execution_pipeline.py:92: registry.register(
+tests\test_post_execution_pipeline.py:106: registry = HandlerRegistry()
+tests\test_post_execution_pipeline.py:108: registry.register(
+tests\test_post_execution_pipeline.py:109: HandlerSpec(
+tests\test_post_execution_pipeline.py:110: handler_id=HANDLER_ID,
+tests\test_post_execution_pipeline.py:238: handlers={
+tests\test_post_execution_pipeline.py:239: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:298: handlers={
+tests\test_post_execution_pipeline.py:299: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:314: assertion_registry.register(
+tests\test_post_execution_pipeline.py:344: handlers={
+tests\test_post_execution_pipeline.py:345: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:409: handlers={
+tests\test_post_execution_pipeline.py:410: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:457: handlers={
+tests\test_post_execution_pipeline.py:458: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:511: handlers={
+tests\test_post_execution_pipeline.py:512: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:566: handlers={
+tests\test_post_execution_pipeline.py:567: HANDLER_ID: lambda step: None
+tests\test_post_execution_pipeline.py:613: handlers={
+tests\test_post_execution_pipeline.py:614: HANDLER_ID: lambda step: None
+tests\test_preconditions.py:97: registry.register(
+tests\test_preconditions.py:127: registry.register(
+tests\test_preconditions.py:188: registry.register(
+tests\test_preconditions.py:221: registry.register(
+tests\test_preconditions.py:245: registry.register(
+tests\test_preconditions.py:269: registry.register(
+tests\test_preconditions.py:276: registry.register(
+tests\test_preconditions.py:283: registry.register(
+tests\test_preconditions.py:313: registry.register(
+tests\test_preconditions.py:320: registry.register(
+tests\test_preconditions.py:327: registry.register(
+tests\test_preconditions.py:363: registry.register(
+tests\test_preconditions.py:370: registry.register(
+tests\test_preconditions.py:386: registry.register(
+tests\test_preconditions.py:411: registry.register(
+tests\test_preconditions.py:438: registry.register(
+tests\test_preconditions.py:445: registry.register(
+tests\test_preconditions.py:452: registry.register(
+tests\test_resource_admission.py:16: from runtime.execution_policy import (
+tests\test_resource_admission_pipeline.py:33: from runtime.execution_policy import (
+tests\test_resource_admission_pipeline.py:52: handler_id="handler.test",
+tests\test_resource_admission_pipeline.py:129: handlers={
+tests\test_resource_admission_pipeline.py:161: handlers={
+tests\test_resource_admission_pipeline.py:190: handlers={
+tests\test_resource_admission_pipeline.py:222: handlers={
+tests\test_resource_admission_pipeline.py:252: handlers={
+tests\test_resource_admission_pipeline.py:281: handlers={
+tests\test_resource_policy.py:25: from runtime.execution_policy import (
+tests\test_target_resolver.py:34: directory.register(
+tests\test_target_resolver.py:42: directory.register(
+tests\test_target_resolver.py:50: directory.register(
+tests\test_target_resolver.py:58: directory.register(
+tests\test_target_resolver.py:66: directory.register(
+tests\test_task_pipeline.py:65: HANDLER_ID = "change.handler"
+tests\test_task_pipeline.py:104: registry.register(
+tests\test_task_pipeline.py:122: directory.register(
+tests\test_task_pipeline.py:134: registry = HandlerRegistry()
+tests\test_task_pipeline.py:136: registry.register(
+tests\test_task_pipeline.py:137: HandlerSpec(
+tests\test_task_pipeline.py:138: handler_id=HANDLER_ID,
+tests\test_task_pipeline.py:182: registry.register(
+tests\test_task_pipeline.py:229: {HANDLER_ID: handler},
+tests\test_task_pipeline.py:263: {HANDLER_ID: handler},
+tests\test_task_pipeline.py:290: assert plan.steps[0].handler_id == (
+tests\test_task_pipeline.py:291: resolution.handler_spec.handler_id
+tests\test_task_pipeline.py:333: {HANDLER_ID: handler},
+tests\test_task_pipeline.py:362: {HANDLER_ID: handler},
+tests\test_task_pipeline.py:384: {HANDLER_ID: lambda step: None},
+tests\test_task_pipeline.py:390: {HANDLER_ID: lambda step: None},
+tests\test_task_resolution.py:53: registry.register(
+tests\test_task_resolution.py:65: registry.register(
+tests\test_task_resolution.py:77: registry.register(
+tests\test_task_resolution.py:93: directory.register(
+tests\test_task_resolution.py:105: registry = HandlerRegistry()
+tests\test_task_resolution.py:107: registry.register(
+tests\test_task_resolution.py:108: HandlerSpec(
+tests\test_task_resolution.py:109: handler_id="generic.handler",
+tests\test_task_resolution.py:115: registry.register(
+tests\test_task_resolution.py:116: HandlerSpec(
+tests\test_task_resolution.py:117: handler_id="change.handler",
+tests\test_task_resolution.py:205: assert result.handler_spec.handler_id == "change.handler"
+tests\test_task_resolution.py:209: registry = HandlerRegistry()
+tests\test_task_resolution.py:211: registry.register(
+tests\test_task_resolution.py:212: HandlerSpec(
+tests\test_task_resolution.py:213: handler_id="secure.handler",
+tests\test_task_resolution.py:216: required_capabilities=("filesystem.write",),
+tests\test_task_resolution.py:250: with_capability.handler_spec.handler_id
+tests\test_task_resolution.py:306: empty_handler_registry = HandlerRegistry()
+tests\test_task_resolution.py:334: registry = HandlerRegistry()
+tests\test_task_resolution.py:336: registry.register(
+tests\test_task_resolution.py:337: HandlerSpec(
+tests\test_task_resolution.py:338: handler_id="operation.handler",
+tests\test_task_resolution.py:347: registry.register(
+tests\test_task_resolution.py:348: HandlerSpec(
+tests\test_task_resolution.py:349: handler_id="project.handler",
+tests\test_task_resolution.py:491: handler_registry=HandlerRegistry()
+tests\test_task_run_attempt_lifecycle.py:43: from runtime.execution_policy import (
+tests\test_task_run_attempt_lifecycle.py:63: HANDLER_ID = "change.handler"
+tests\test_task_run_attempt_lifecycle.py:99: directory.register(
+tests\test_task_run_attempt_lifecycle.py:111: execution_policy: HandlerExecutionPolicy | None = None,
+tests\test_task_run_attempt_lifecycle.py:113: registry = HandlerRegistry()
+tests\test_task_run_attempt_lifecycle.py:115: registry.register(
+tests\test_task_run_attempt_lifecycle.py:116: HandlerSpec(
+tests\test_task_run_attempt_lifecycle.py:117: handler_id=HANDLER_ID,
+tests\test_task_run_attempt_lifecycle.py:123: execution_policy=execution_policy,
+tests\test_task_run_attempt_lifecycle.py:136: goal_registry.register(
+tests\test_task_run_attempt_lifecycle.py:171: handlers={
+tests\test_task_run_attempt_lifecycle.py:172: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:178: handlers={
+tests\test_task_run_attempt_lifecycle.py:179: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:203: handlers={
+tests\test_task_run_attempt_lifecycle.py:204: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:210: handlers={
+tests\test_task_run_attempt_lifecycle.py:211: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:238: handlers={
+tests\test_task_run_attempt_lifecycle.py:239: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:245: handlers={
+tests\test_task_run_attempt_lifecycle.py:246: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:274: handlers={
+tests\test_task_run_attempt_lifecycle.py:275: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:281: handlers={
+tests\test_task_run_attempt_lifecycle.py:282: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:313: handlers={
+tests\test_task_run_attempt_lifecycle.py:314: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:320: handlers={
+tests\test_task_run_attempt_lifecycle.py:321: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:328: policy_1 = result_1.run.effective_execution_policy
+tests\test_task_run_attempt_lifecycle.py:329: policy_2 = result_2.run.effective_execution_policy
+tests\test_task_run_attempt_lifecycle.py:357: handlers={
+tests\test_task_run_attempt_lifecycle.py:358: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:363: assert result_1.run.effective_execution_policy is not None
+tests\test_task_run_attempt_lifecycle.py:364: assert result_1.run.effective_execution_policy.max_attempts == 5
+tests\test_task_run_attempt_lifecycle.py:379: handlers={
+tests\test_task_run_attempt_lifecycle.py:380: HANDLER_ID: lambda step: None,
+tests\test_task_run_attempt_lifecycle.py:385: assert result_2.run.effective_execution_policy is not None
+tests\test_task_run_attempt_lifecycle.py:386: assert result_2.run.effective_execution_policy.max_attempts == 2
+tests\test_task_run_attempt_lifecycle.py:388: assert result_1.run.effective_execution_policy is not None
+tests\test_task_run_attempt_lifecycle.py:389: assert result_1.run.effective_execution_policy.max_attempts == 5
+tests\test_task_run_cancellation_pipeline.py:59: from runtime.execution_policy import (
+tests\test_task_run_cancellation_pipeline.py:100: goal_registry.register(
+tests\test_task_run_cancellation_pipeline.py:110: target_directory.register(
+tests\test_task_run_cancellation_pipeline.py:118: handler_registry = HandlerRegistry()
+tests\test_task_run_cancellation_pipeline.py:120: handler_registry.register(
+tests\test_task_run_cancellation_pipeline.py:121: HandlerSpec(
+tests\test_task_run_cancellation_pipeline.py:122: handler_id="handler.test",
+tests\test_task_run_cancellation_pipeline.py:155: handlers={
+tests\test_task_run_cancellation_pipeline.py:214: handlers={
+tests\test_task_run_cancellation_pipeline.py:248: handlers={
+tests\test_task_run_cancellation_pipeline.py:278: handlers={
+tests\test_task_run_cancellation_pipeline.py:299: handlers={
+tests\test_task_run_contract_audit.py:75: HANDLER_ID = "change.handler"
+tests\test_task_run_contract_audit.py:124: directory.register(
+tests\test_task_run_contract_audit.py:136: registry = HandlerRegistry()
+tests\test_task_run_contract_audit.py:138: registry.register(
+tests\test_task_run_contract_audit.py:139: HandlerSpec(
+tests\test_task_run_contract_audit.py:140: handler_id=HANDLER_ID,
+tests\test_task_run_contract_audit.py:166: goal_registry.register(
+tests\test_task_run_contract_audit.py:203: handlers={
+tests\test_task_run_contract_audit.py:204: HANDLER_ID: successful_handler(calls)
+tests\test_task_run_contract_audit.py:261: precondition_registry.register(
+tests\test_task_run_contract_audit.py:286: handlers={
+tests\test_task_run_contract_audit.py:287: HANDLER_ID: successful_handler(calls)
+tests\test_task_run_contract_audit.py:312: handlers={
+tests\test_task_run_contract_audit.py:313: HANDLER_ID: failing_handler
+tests\test_task_run_contract_audit.py:367: handlers={
+tests\test_task_run_contract_audit.py:368: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:392: handlers={
+tests\test_task_run_contract_audit.py:393: HANDLER_ID: failing_handler
+tests\test_task_run_contract_audit.py:413: handlers={
+tests\test_task_run_contract_audit.py:414: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:454: assertion_registry.register(
+tests\test_task_run_contract_audit.py:478: handlers={
+tests\test_task_run_contract_audit.py:479: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:522: handlers={
+tests\test_task_run_contract_audit.py:523: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:593: handlers={
+tests\test_task_run_contract_audit.py:594: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:642: handlers={
+tests\test_task_run_contract_audit.py:643: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:673: assertion_registry.register(
+tests\test_task_run_contract_audit.py:711: handlers={
+tests\test_task_run_contract_audit.py:712: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:748: handlers={
+tests\test_task_run_contract_audit.py:749: HANDLER_ID: lambda step: None
+tests\test_task_run_contract_audit.py:805: handlers={
+tests\test_task_run_contract_audit.py:806: HANDLER_ID: lambda step: None
+tests\test_task_run_executor.py:68: HANDLER_ID = "change.handler"
+tests\test_task_run_executor.py:107: goal_registry.register(
+tests\test_task_run_executor.py:124: handlers = (
+tests\test_task_run_executor.py:147: directory.register(
+tests\test_task_run_executor.py:159: registry = HandlerRegistry()
+tests\test_task_run_executor.py:161: registry.register(
+tests\test_task_run_executor.py:162: HandlerSpec(
+tests\test_task_run_executor.py:163: handler_id=HANDLER_ID,
+tests\test_task_run_executor.py:185: handlers={HANDLER_ID: handler},
+tests\test_task_run_executor.py:202: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:226: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:243: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:269: precondition_registry.register(
+tests\test_task_run_executor.py:287: handlers={HANDLER_ID: handler},
+tests\test_task_run_executor.py:311: handlers={HANDLER_ID: failing_handler},
+tests\test_task_run_executor.py:344: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:364: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:381: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:394: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:409: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:429: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:464: handlers={HANDLER_ID: lambda step: None},
+tests\test_task_run_executor.py:492: execution_policy=task.execution_policy,
+tests\test_task_run_executor.py:497: assertion_registry.register(
+tests\test_task_run_executor.py:507: goal_registry.register(
+tests\test_task_run_executor.py:537: handlers={
+tests\test_task_run_executor.py:538: HANDLER_ID: lambda step: None
+tests\test_task_run_executor.py:598: handlers={
+tests\test_task_run_executor.py:599: HANDLER_ID: lambda step: None
+tests\test_task_run_executor.py:660: handlers={
+tests\test_task_run_executor.py:661: HANDLER_ID: lambda step: None
+tests\test_task_run_policy_isolation.py:43: from runtime.execution_policy import (
+tests\test_task_run_policy_isolation.py:63: HANDLER_ID = "change.handler"
+tests\test_task_run_policy_isolation.py:101: goal_registry.register(
+tests\test_task_run_policy_isolation.py:113: target_directory.register(
+tests\test_task_run_policy_isolation.py:121: handler_registry = HandlerRegistry()
+tests\test_task_run_policy_isolation.py:123: handler_registry.register(
+tests\test_task_run_policy_isolation.py:124: HandlerSpec(
+tests\test_task_run_policy_isolation.py:125: handler_id=HANDLER_ID,
+tests\test_task_run_policy_isolation.py:131: execution_policy=HandlerExecutionPolicy(
+tests\test_task_run_policy_isolation.py:160: handlers={
+tests\test_task_run_policy_isolation.py:161: HANDLER_ID: lambda step: None,
+tests\test_task_run_policy_isolation.py:167: assert result_1.run.effective_execution_policy is not None
+tests\test_task_run_policy_isolation.py:169: policy_1 = result_1.run.effective_execution_policy
+tests\test_task_run_policy_isolation.py:183: handlers={
+tests\test_task_run_policy_isolation.py:184: HANDLER_ID: lambda step: None,
+tests\test_task_run_policy_isolation.py:190: assert result_2.run.effective_execution_policy is not None
+tests\test_task_run_policy_isolation.py:192: policy_2 = result_2.run.effective_execution_policy
+tests\test_task_run_policy_isolation.py:211: handlers={
+tests\test_task_run_policy_isolation.py:212: HANDLER_ID: lambda step: None,
+tests\test_task_run_policy_isolation.py:231: handlers={
+tests\test_task_run_policy_isolation.py:232: HANDLER_ID: lambda step: None,
+tests\test_task_run_policy_isolation.py:257: handlers={
+tests\test_task_run_policy_isolation.py:258: HANDLER_ID: lambda step: None,
+tests\test_task_run_policy_isolation.py:275: handlers={
+tests\test_task_run_policy_isolation.py:276: HANDLER_ID: lambda step: None,
+tests\test_task_run_terminal_lifecycle.py:42: from runtime.execution_policy import (
+tests\test_task_run_terminal_lifecycle.py:64: HANDLER_ID = "change.handler"
+tests\test_task_run_terminal_lifecycle.py:100: goal_registry.register(
+tests\test_task_run_terminal_lifecycle.py:112: target_directory.register(
+tests\test_task_run_terminal_lifecycle.py:120: handler_registry = HandlerRegistry()
+tests\test_task_run_terminal_lifecycle.py:122: handler_registry.register(
+tests\test_task_run_terminal_lifecycle.py:123: HandlerSpec(
+tests\test_task_run_terminal_lifecycle.py:124: handler_id=HANDLER_ID,
+tests\test_task_run_terminal_lifecycle.py:156: handlers={
+tests\test_task_run_terminal_lifecycle.py:157: HANDLER_ID: failing_handler,
+tests\test_task_run_terminal_lifecycle.py:171: handlers={
+tests\test_task_run_terminal_lifecycle.py:172: HANDLER_ID: lambda step: None,
+tests\test_task_run_terminal_lifecycle.py:190: handlers={
+tests\test_task_run_terminal_lifecycle.py:191: HANDLER_ID: failing_handler,
+tests\test_task_run_terminal_lifecycle.py:217: handlers={
+tests\test_task_run_terminal_lifecycle.py:218: HANDLER_ID: lambda step: None,
+tests\test_task_run_terminal_lifecycle.py:247: handlers={
+tests\test_task_run_terminal_lifecycle.py:248: HANDLER_ID: failing_handler,
+tests\test_task_run_terminal_lifecycle.py:269: handlers={
+tests\test_task_run_terminal_lifecycle.py:270: HANDLER_ID: lambda step: None,
+tests\test_task_run_terminal_lifecycle.py:281: handlers={
+tests\test_task_run_terminal_lifecycle.py:282: HANDLER_ID: lambda step: None,
+tests\test_task_v3_model.py:74: execution_policy=None,
+tests\test_task_v3_model.py:163: def test_execution_policy() -> None:
+tests\test_task_v3_model.py:333: execution_policy=ExecutionPolicy(
+tests\test_task_v3_model.py:356: test_execution_policy,
+tests\test_task_v3_schema.py:76: "execution_policy": {
+tests\test_task_v3_schema.py:366: task["execution_policy"]["retry"]["max_attempts"] = 0
+tests\test_task_v3_schema.py:545: task["execution_policy"]["retry"] = "invalid"
+tests\test_task_v3_schema.py:554: task["execution_policy"]["failure"]["mode"] = "INVALID_FAILURE_MODE"
+tests\test_task_v3_schema.py:563: task["execution_policy"]["rollback"]["mode"] = "INVALID_ROLLBACK_MODE"
+tests\test_task_v3_schema_model_roundtrip.py:55: "execution_policy": {
+tests\test_task_v3_validation.py:55: execution_policy=None,
+tests\test_transaction_execution_policy.py:14: from runtime.execution_policy import (
+tests\test_transaction_policy_pipeline.py:43: from runtime.execution_policy import (
+tests\test_transaction_policy_pipeline.py:62: HANDLER_ID = "change.handler"
+tests\test_transaction_policy_pipeline.py:98: directory.register(
+tests\test_transaction_policy_pipeline.py:112: registry = HandlerRegistry()
+tests\test_transaction_policy_pipeline.py:114: registry.register(
+tests\test_transaction_policy_pipeline.py:115: HandlerSpec(
+tests\test_transaction_policy_pipeline.py:116: handler_id=HANDLER_ID,
+tests\test_transaction_policy_pipeline.py:122: execution_policy=HandlerExecutionPolicy(
+tests\test_transaction_policy_pipeline.py:146: goal_registry.register(
+tests\test_transaction_policy_pipeline.py:197: handlers={
+tests\test_transaction_policy_pipeline.py:198: HANDLER_ID: lambda step: None,
+tests\test_transaction_policy_pipeline.py:206: policy = result.run.effective_execution_policy
+tests\test_transaction_policy_pipeline.py:247: handlers={
+tests\test_transaction_policy_pipeline.py:248: HANDLER_ID: lambda step: None,
+tests\test_transaction_policy_pipeline.py:255: policy = result.run.effective_execution_policy
+tests\test_transaction_policy_pipeline.py:278: handlers={
+tests\test_transaction_policy_pipeline.py:279: HANDLER_ID: lambda step: None,
+tests\test_transaction_policy_pipeline.py:285: policy = result.run.effective_execution_policy
+tests\test_transaction_policy_pipeline.py:308: handlers={
+tests\test_transaction_policy_pipeline.py:309: HANDLER_ID: lambda step: None,
+tests\test_transaction_policy_pipeline.py:317: policy = result.run.effective_execution_policy
+tests\test_transaction_policy_pipeline.py:341: handlers={
+tests\test_transaction_policy_pipeline.py:342: HANDLER_ID: lambda step: None,
+tests\test_transaction_policy_pipeline.py:350: assert result.run.effective_execution_policy is None
+
+======================================================================

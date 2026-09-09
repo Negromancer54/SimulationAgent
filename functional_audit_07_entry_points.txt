@@ -1,0 +1,904 @@
+﻿7. ENTRY POINTS
+======================================================================
+agent.py:44: Execution policy remains owned by run_task().
+agent.py:57: def validate_task(task):
+agent.py:889: def fail_task(
+agent.py:932: def run_task(task):
+agent.py:955: if not validate_task(task):
+agent.py:1092: return fail_task(
+agent.py:1115: return fail_task(
+agent.py:1132: return fail_task(
+agent.py:1163: return fail_task(
+agent.py:1200: return fail_task(
+agent.py:1231: return fail_task(
+agent.py:1276: result = run_task(
+agent.py:1277: Task(
+agent.py:1620: success_result = run_task(
+agent.py:1621: Task(
+agent.py:1670: failure_result = run_task(
+agent.py:1671: Task(
+agent.py:1730: returned = fail_task(
+agent.py:1808: result = run_task(
+agent.py:1809: Task(
+agent.py:1884: result = run_task(
+agent.py:1885: Task(
+agent.py:1987: result = run_task(
+agent.py:1988: Task(
+agent.py:2118: result = run_task(
+agent.py:2119: Task(
+agent.py:2273: result = run_task(
+agent.py:2274: Task(
+agent.py:2453: result = run_task(
+agent.py:2454: Task(
+agent.py:2581: result = run_task(
+agent.py:2582: Task(
+agent.py:2698: result = run_task(
+agent.py:2699: Task(
+agent.py:2830: result = run_task(
+agent.py:2831: Task(
+agent.py:2976: Verify that a successful run_task() transaction can be
+agent.py:3004: result = run_task(
+agent.py:3005: Task(
+agent.py:3031: # Serialize the actual TaskResult produced by run_task().
+agent.py:3213: task = Task(
+agent.py:3285: task = Task(
+agent.py:3358: def test_validate_task():
+agent.py:3363: valid_task = Task(
+agent.py:3368: empty_id_task = Task(
+agent.py:3373: empty_description_task = Task(
+agent.py:3377: invalid_edits_task = Task(
+agent.py:3383: invalid_expected_paths_task = Task(
+agent.py:3388: invalid_edit_element_task = Task(
+agent.py:3395: invalid_edit_type_task = Task(
+agent.py:3404: unknown_edit_type_task = Task(
+agent.py:3414: missing_create_path_task = Task(
+agent.py:3424: missing_create_content_task = Task(
+agent.py:3434: missing_replace_path_task = Task(
+agent.py:3445: missing_replace_old_text_task = Task(
+agent.py:3456: missing_replace_new_text_task = Task(
+agent.py:3467: invalid_create_path_type_task = Task(
+agent.py:3478: invalid_create_content_type_task = Task(
+agent.py:3489: invalid_replace_path_type_task = Task(
+agent.py:3502: invalid_replace_old_text_type_task = Task(
+agent.py:3515: invalid_replace_new_text_type_task = Task(
+agent.py:3528: invalid_replace_expected_count_type_task = Task(
+agent.py:3541: invalid_replace_expected_count_zero_task = Task(
+agent.py:3555: invalid_replace_expected_count_negative_task = Task(
+agent.py:3569: invalid_replace_expected_count_bool_task = Task(
+agent.py:3582: empty_create_path_task = Task(
+agent.py:3594: empty_create_content_task = Task(
+agent.py:3609: empty_replace_old_text_task = Task(
+agent.py:3622: empty_replace_new_text_task = Task(
+agent.py:3634: invalid_expected_paths_element_type_task = Task(
+agent.py:3643: empty_expected_paths_element_task = Task(
+agent.py:3652: whitespace_expected_paths_element_task = Task(
+agent.py:3660: missing_create_expected_path_task = Task(
+agent.py:3675: missing_replace_expected_path_task = Task(
+agent.py:3691: extra_expected_path_task = Task(
+agent.py:3706: multiple_create_edits_task = Task(
+agent.py:3727: multiple_replace_same_path_task = Task(
+agent.py:3749: create_replace_different_paths_task = Task(
+agent.py:3771: create_replace_same_path_task = Task(
+agent.py:3792: assert validate_task(valid_task) is True
+agent.py:3793: assert validate_task(empty_id_task) is False
+agent.py:3794: assert validate_task(empty_description_task) is False
+agent.py:3795: assert validate_task(None) is False
+agent.py:3796: assert validate_task(invalid_edits_task) is False
+agent.py:3797: assert validate_task(invalid_expected_paths_task) is False
+agent.py:3798: assert validate_task(invalid_edit_element_task) is False
+agent.py:3799: assert validate_task(invalid_edit_type_task) is False
+agent.py:3800: assert validate_task(unknown_edit_type_task) is False
+agent.py:3801: assert validate_task(missing_create_path_task) is False
+agent.py:3802: assert validate_task(missing_create_content_task) is False
+agent.py:3803: assert validate_task(missing_replace_path_task) is False
+agent.py:3804: assert validate_task(missing_replace_old_text_task) is False
+agent.py:3805: assert validate_task(missing_replace_new_text_task) is False
+agent.py:3806: assert validate_task(invalid_create_path_type_task) is False
+agent.py:3807: assert validate_task(invalid_create_content_type_task) is False
+agent.py:3808: assert validate_task(invalid_replace_path_type_task) is False
+agent.py:3809: assert validate_task(invalid_replace_old_text_type_task) is False
+agent.py:3810: assert validate_task(invalid_replace_new_text_type_task) is False
+agent.py:3811: assert validate_task(invalid_replace_expected_count_type_task) is False
+agent.py:3812: assert validate_task(invalid_replace_expected_count_zero_task) is False
+agent.py:3813: assert validate_task(invalid_replace_expected_count_negative_task) is False
+agent.py:3814: assert validate_task(invalid_replace_expected_count_bool_task) is False
+agent.py:3815: assert validate_task(empty_create_path_task) is False
+agent.py:3816: assert validate_task(empty_create_content_task) is True
+agent.py:3817: assert validate_task(empty_replace_old_text_task) is False
+agent.py:3818: assert validate_task(empty_replace_new_text_task) is True
+agent.py:3819: assert validate_task(invalid_expected_paths_element_type_task) is False
+agent.py:3820: assert validate_task(empty_expected_paths_element_task) is False
+agent.py:3821: assert validate_task(whitespace_expected_paths_element_task) is False
+agent.py:3822: assert validate_task(missing_create_expected_path_task) is False
+agent.py:3823: assert validate_task(missing_replace_expected_path_task) is False
+agent.py:3824: assert validate_task(extra_expected_path_task) is False
+agent.py:3825: assert validate_task(multiple_create_edits_task) is True
+agent.py:3826: assert validate_task(multiple_replace_same_path_task) is True
+agent.py:3827: assert validate_task(create_replace_different_paths_task) is True
+agent.py:3828: assert validate_task(create_replace_same_path_task) is True
+agent.py:3833: validate_task(valid_task),
+agent.py:3838: validate_task(empty_id_task),
+agent.py:3843: validate_task(empty_description_task),
+agent.py:3847: validate_task(invalid_edits_task),
+agent.py:3852: validate_task(invalid_expected_paths_task),
+agent.py:3856: validate_task(invalid_edit_element_task),
+agent.py:3860: validate_task(invalid_edit_type_task),
+agent.py:3864: validate_task(unknown_edit_type_task),
+agent.py:3868: validate_task(missing_create_path_task),
+agent.py:3872: validate_task(missing_create_content_task),
+agent.py:3876: validate_task(missing_replace_path_task),
+agent.py:3880: validate_task(
+agent.py:3886: validate_task(
+agent.py:3892: validate_task(
+agent.py:3898: validate_task(
+agent.py:3904: validate_task(
+agent.py:3911: validate_task(
+agent.py:3918: validate_task(
+agent.py:3925: validate_task(
+agent.py:3931: validate_task(
+agent.py:3938: validate_task(
+agent.py:3945: validate_task(
+agent.py:3951: validate_task(empty_create_path_task),
+agent.py:3956: validate_task(empty_create_content_task),
+agent.py:3961: validate_task(empty_replace_old_text_task),
+agent.py:3966: validate_task(empty_replace_new_text_task),
+agent.py:3970: validate_task(invalid_expected_paths_element_type_task),
+agent.py:3975: validate_task(empty_expected_paths_element_task),
+agent.py:3980: validate_task(whitespace_expected_paths_element_task),
+agent.py:3984: validate_task(missing_create_expected_path_task),
+agent.py:3989: validate_task(missing_replace_expected_path_task),
+agent.py:3994: validate_task(extra_expected_path_task),
+agent.py:3998: validate_task(multiple_create_edits_task),
+agent.py:4003: validate_task(multiple_replace_same_path_task),
+agent.py:4008: validate_task(create_replace_different_paths_task),
+agent.py:4013: validate_task(create_replace_same_path_task),
+agent.py:4017: validate_task(None),
+agent.py:4032: invalid_task = Task(
+agent.py:4039: result = run_task(invalid_task)
+agent.py:4112: Verify that run_task() rejects a Task V2
+agent.py:4116: invalid_task = Task(
+agent.py:4123: result = run_task(invalid_task)
+agent.py:4195: Verify that run_task() rejects a Task V2
+agent.py:4199: invalid_task = Task(
+agent.py:4206: result = run_task(invalid_task)
+agent.py:4279: Verify that run_task() rejects a Task V2
+agent.py:4283: invalid_task = Task(
+agent.py:4292: result = run_task(invalid_task)
+agent.py:4365: Verify that run_task() rejects an edit without
+agent.py:4369: invalid_task = Task(
+agent.py:4380: result = run_task(invalid_task)
+agent.py:4452: Verify that run_task() accepts a valid create edit
+agent.py:4458: task = Task(
+agent.py:4473: result = run_task(task)
+agent.py:4575: Verify that run_task() accepts a valid replace edit
+agent.py:4633: task = Task(
+agent.py:4654: result = run_task(task)
+agent.py:4879: result = run_task(task)
+agent.py:5038: task = Task(
+agent.py:5075: task = Task(
+agent.py:5129: task = Task(
+agent.py:5174: task = Task(
+agent.py:5272: result = run_task(task)
+agent.py:5431: task = Task(
+agent.py:5475: task = Task(
+agent.py:5528: task = Task(
+agent.py:5583: task = Task(
+agent.py:5631: Verify that run_task() rejects an edit with
+agent.py:5635: invalid_task = Task(
+agent.py:5647: result = run_task(invalid_task)
+agent.py:5720: Verify that run_task() accepts a valid Task V2 as its input.
+agent.py:5747: task = Task(
+agent.py:5750: "Verify successful run_task() execution "
+agent.py:5767: result = run_task(task)
+agent.py:5842: "All run_task(Task V2) "
+agent.py:5857: "run_task(Task V2) cleanup passed."
+agent.py:5892: result = run_task(
+agent.py:5893: Task(
+agent.py:5911: task = Task(
+agent.py:5926: result = run_task(task)
+agent.py:5959: task = Task(
+agent.py:5978: result = run_task(task)
+agent.py:6564: task = Task(
+agent.py:6577: result = run_task(task)
+agent.py:6587: def main():
+agent.py:6812: test_validate_task()
+agent.py:6830: test_validate_task()
+agent.py:6832: test_validate_task()
+agent.py:6834: test_validate_task()
+agent.py:6836: test_validate_task()
+agent.py:6838: test_validate_task()
+agent.py:6840: test_validate_task()
+agent.py:6842: test_validate_task()
+agent.py:6844: test_validate_task()
+agent.py:6846: test_validate_task()
+agent.py:6848: test_validate_task()
+agent.py:6850: test_validate_task()
+agent.py:6852: test_validate_task()
+agent.py:6854: test_validate_task()
+agent.py:6856: test_validate_task()
+agent.py:6858: test_validate_task()
+agent.py:6860: test_validate_task()
+agent.py:6862: test_validate_task()
+agent.py:6864: test_validate_task()
+agent.py:6866: test_validate_task()
+agent.py:6868: test_validate_task()
+agent.py:6870: test_validate_task()
+agent.py:6872: test_validate_task()
+agent.py:6874: test_validate_task()
+agent.py:6876: test_validate_task()
+agent.py:6878: test_validate_task()
+agent.py:6880: test_validate_task()
+agent.py:6882: test_validate_task()
+agent.py:6884: test_validate_task()
+agent.py:6913: if __name__ == "__main__":
+agent_stable_task_v2_baseline.py:44: Execution policy remains owned by run_task().
+agent_stable_task_v2_baseline.py:57: def validate_task(task):
+agent_stable_task_v2_baseline.py:889: def fail_task(
+agent_stable_task_v2_baseline.py:932: def run_task(task):
+agent_stable_task_v2_baseline.py:955: if not validate_task(task):
+agent_stable_task_v2_baseline.py:1092: return fail_task(
+agent_stable_task_v2_baseline.py:1115: return fail_task(
+agent_stable_task_v2_baseline.py:1132: return fail_task(
+agent_stable_task_v2_baseline.py:1163: return fail_task(
+agent_stable_task_v2_baseline.py:1200: return fail_task(
+agent_stable_task_v2_baseline.py:1231: return fail_task(
+agent_stable_task_v2_baseline.py:1276: result = run_task(
+agent_stable_task_v2_baseline.py:1277: Task(
+agent_stable_task_v2_baseline.py:1620: success_result = run_task(
+agent_stable_task_v2_baseline.py:1621: Task(
+agent_stable_task_v2_baseline.py:1670: failure_result = run_task(
+agent_stable_task_v2_baseline.py:1671: Task(
+agent_stable_task_v2_baseline.py:1730: returned = fail_task(
+agent_stable_task_v2_baseline.py:1808: result = run_task(
+agent_stable_task_v2_baseline.py:1809: Task(
+agent_stable_task_v2_baseline.py:1884: result = run_task(
+agent_stable_task_v2_baseline.py:1885: Task(
+agent_stable_task_v2_baseline.py:1987: result = run_task(
+agent_stable_task_v2_baseline.py:1988: Task(
+agent_stable_task_v2_baseline.py:2118: result = run_task(
+agent_stable_task_v2_baseline.py:2119: Task(
+agent_stable_task_v2_baseline.py:2273: result = run_task(
+agent_stable_task_v2_baseline.py:2274: Task(
+agent_stable_task_v2_baseline.py:2453: result = run_task(
+agent_stable_task_v2_baseline.py:2454: Task(
+agent_stable_task_v2_baseline.py:2581: result = run_task(
+agent_stable_task_v2_baseline.py:2582: Task(
+agent_stable_task_v2_baseline.py:2698: result = run_task(
+agent_stable_task_v2_baseline.py:2699: Task(
+agent_stable_task_v2_baseline.py:2830: result = run_task(
+agent_stable_task_v2_baseline.py:2831: Task(
+agent_stable_task_v2_baseline.py:2976: Verify that a successful run_task() transaction can be
+agent_stable_task_v2_baseline.py:3004: result = run_task(
+agent_stable_task_v2_baseline.py:3005: Task(
+agent_stable_task_v2_baseline.py:3031: # Serialize the actual TaskResult produced by run_task().
+agent_stable_task_v2_baseline.py:3213: task = Task(
+agent_stable_task_v2_baseline.py:3285: task = Task(
+agent_stable_task_v2_baseline.py:3358: def test_validate_task():
+agent_stable_task_v2_baseline.py:3363: valid_task = Task(
+agent_stable_task_v2_baseline.py:3368: empty_id_task = Task(
+agent_stable_task_v2_baseline.py:3373: empty_description_task = Task(
+agent_stable_task_v2_baseline.py:3377: invalid_edits_task = Task(
+agent_stable_task_v2_baseline.py:3383: invalid_expected_paths_task = Task(
+agent_stable_task_v2_baseline.py:3388: invalid_edit_element_task = Task(
+agent_stable_task_v2_baseline.py:3395: invalid_edit_type_task = Task(
+agent_stable_task_v2_baseline.py:3404: unknown_edit_type_task = Task(
+agent_stable_task_v2_baseline.py:3414: missing_create_path_task = Task(
+agent_stable_task_v2_baseline.py:3424: missing_create_content_task = Task(
+agent_stable_task_v2_baseline.py:3434: missing_replace_path_task = Task(
+agent_stable_task_v2_baseline.py:3445: missing_replace_old_text_task = Task(
+agent_stable_task_v2_baseline.py:3456: missing_replace_new_text_task = Task(
+agent_stable_task_v2_baseline.py:3467: invalid_create_path_type_task = Task(
+agent_stable_task_v2_baseline.py:3478: invalid_create_content_type_task = Task(
+agent_stable_task_v2_baseline.py:3489: invalid_replace_path_type_task = Task(
+agent_stable_task_v2_baseline.py:3502: invalid_replace_old_text_type_task = Task(
+agent_stable_task_v2_baseline.py:3515: invalid_replace_new_text_type_task = Task(
+agent_stable_task_v2_baseline.py:3528: invalid_replace_expected_count_type_task = Task(
+agent_stable_task_v2_baseline.py:3541: invalid_replace_expected_count_zero_task = Task(
+agent_stable_task_v2_baseline.py:3555: invalid_replace_expected_count_negative_task = Task(
+agent_stable_task_v2_baseline.py:3569: invalid_replace_expected_count_bool_task = Task(
+agent_stable_task_v2_baseline.py:3582: empty_create_path_task = Task(
+agent_stable_task_v2_baseline.py:3594: empty_create_content_task = Task(
+agent_stable_task_v2_baseline.py:3609: empty_replace_old_text_task = Task(
+agent_stable_task_v2_baseline.py:3622: empty_replace_new_text_task = Task(
+agent_stable_task_v2_baseline.py:3634: invalid_expected_paths_element_type_task = Task(
+agent_stable_task_v2_baseline.py:3643: empty_expected_paths_element_task = Task(
+agent_stable_task_v2_baseline.py:3652: whitespace_expected_paths_element_task = Task(
+agent_stable_task_v2_baseline.py:3660: missing_create_expected_path_task = Task(
+agent_stable_task_v2_baseline.py:3675: missing_replace_expected_path_task = Task(
+agent_stable_task_v2_baseline.py:3691: extra_expected_path_task = Task(
+agent_stable_task_v2_baseline.py:3706: multiple_create_edits_task = Task(
+agent_stable_task_v2_baseline.py:3727: multiple_replace_same_path_task = Task(
+agent_stable_task_v2_baseline.py:3749: create_replace_different_paths_task = Task(
+agent_stable_task_v2_baseline.py:3771: create_replace_same_path_task = Task(
+agent_stable_task_v2_baseline.py:3792: assert validate_task(valid_task) is True
+agent_stable_task_v2_baseline.py:3793: assert validate_task(empty_id_task) is False
+agent_stable_task_v2_baseline.py:3794: assert validate_task(empty_description_task) is False
+agent_stable_task_v2_baseline.py:3795: assert validate_task(None) is False
+agent_stable_task_v2_baseline.py:3796: assert validate_task(invalid_edits_task) is False
+agent_stable_task_v2_baseline.py:3797: assert validate_task(invalid_expected_paths_task) is False
+agent_stable_task_v2_baseline.py:3798: assert validate_task(invalid_edit_element_task) is False
+agent_stable_task_v2_baseline.py:3799: assert validate_task(invalid_edit_type_task) is False
+agent_stable_task_v2_baseline.py:3800: assert validate_task(unknown_edit_type_task) is False
+agent_stable_task_v2_baseline.py:3801: assert validate_task(missing_create_path_task) is False
+agent_stable_task_v2_baseline.py:3802: assert validate_task(missing_create_content_task) is False
+agent_stable_task_v2_baseline.py:3803: assert validate_task(missing_replace_path_task) is False
+agent_stable_task_v2_baseline.py:3804: assert validate_task(missing_replace_old_text_task) is False
+agent_stable_task_v2_baseline.py:3805: assert validate_task(missing_replace_new_text_task) is False
+agent_stable_task_v2_baseline.py:3806: assert validate_task(invalid_create_path_type_task) is False
+agent_stable_task_v2_baseline.py:3807: assert validate_task(invalid_create_content_type_task) is False
+agent_stable_task_v2_baseline.py:3808: assert validate_task(invalid_replace_path_type_task) is False
+agent_stable_task_v2_baseline.py:3809: assert validate_task(invalid_replace_old_text_type_task) is False
+agent_stable_task_v2_baseline.py:3810: assert validate_task(invalid_replace_new_text_type_task) is False
+agent_stable_task_v2_baseline.py:3811: assert validate_task(invalid_replace_expected_count_type_task) is False
+agent_stable_task_v2_baseline.py:3812: assert validate_task(invalid_replace_expected_count_zero_task) is False
+agent_stable_task_v2_baseline.py:3813: assert validate_task(invalid_replace_expected_count_negative_task) is False
+agent_stable_task_v2_baseline.py:3814: assert validate_task(invalid_replace_expected_count_bool_task) is False
+agent_stable_task_v2_baseline.py:3815: assert validate_task(empty_create_path_task) is False
+agent_stable_task_v2_baseline.py:3816: assert validate_task(empty_create_content_task) is True
+agent_stable_task_v2_baseline.py:3817: assert validate_task(empty_replace_old_text_task) is False
+agent_stable_task_v2_baseline.py:3818: assert validate_task(empty_replace_new_text_task) is True
+agent_stable_task_v2_baseline.py:3819: assert validate_task(invalid_expected_paths_element_type_task) is False
+agent_stable_task_v2_baseline.py:3820: assert validate_task(empty_expected_paths_element_task) is False
+agent_stable_task_v2_baseline.py:3821: assert validate_task(whitespace_expected_paths_element_task) is False
+agent_stable_task_v2_baseline.py:3822: assert validate_task(missing_create_expected_path_task) is False
+agent_stable_task_v2_baseline.py:3823: assert validate_task(missing_replace_expected_path_task) is False
+agent_stable_task_v2_baseline.py:3824: assert validate_task(extra_expected_path_task) is False
+agent_stable_task_v2_baseline.py:3825: assert validate_task(multiple_create_edits_task) is True
+agent_stable_task_v2_baseline.py:3826: assert validate_task(multiple_replace_same_path_task) is True
+agent_stable_task_v2_baseline.py:3827: assert validate_task(create_replace_different_paths_task) is True
+agent_stable_task_v2_baseline.py:3828: assert validate_task(create_replace_same_path_task) is True
+agent_stable_task_v2_baseline.py:3833: validate_task(valid_task),
+agent_stable_task_v2_baseline.py:3838: validate_task(empty_id_task),
+agent_stable_task_v2_baseline.py:3843: validate_task(empty_description_task),
+agent_stable_task_v2_baseline.py:3847: validate_task(invalid_edits_task),
+agent_stable_task_v2_baseline.py:3852: validate_task(invalid_expected_paths_task),
+agent_stable_task_v2_baseline.py:3856: validate_task(invalid_edit_element_task),
+agent_stable_task_v2_baseline.py:3860: validate_task(invalid_edit_type_task),
+agent_stable_task_v2_baseline.py:3864: validate_task(unknown_edit_type_task),
+agent_stable_task_v2_baseline.py:3868: validate_task(missing_create_path_task),
+agent_stable_task_v2_baseline.py:3872: validate_task(missing_create_content_task),
+agent_stable_task_v2_baseline.py:3876: validate_task(missing_replace_path_task),
+agent_stable_task_v2_baseline.py:3880: validate_task(
+agent_stable_task_v2_baseline.py:3886: validate_task(
+agent_stable_task_v2_baseline.py:3892: validate_task(
+agent_stable_task_v2_baseline.py:3898: validate_task(
+agent_stable_task_v2_baseline.py:3904: validate_task(
+agent_stable_task_v2_baseline.py:3911: validate_task(
+agent_stable_task_v2_baseline.py:3918: validate_task(
+agent_stable_task_v2_baseline.py:3925: validate_task(
+agent_stable_task_v2_baseline.py:3931: validate_task(
+agent_stable_task_v2_baseline.py:3938: validate_task(
+agent_stable_task_v2_baseline.py:3945: validate_task(
+agent_stable_task_v2_baseline.py:3951: validate_task(empty_create_path_task),
+agent_stable_task_v2_baseline.py:3956: validate_task(empty_create_content_task),
+agent_stable_task_v2_baseline.py:3961: validate_task(empty_replace_old_text_task),
+agent_stable_task_v2_baseline.py:3966: validate_task(empty_replace_new_text_task),
+agent_stable_task_v2_baseline.py:3970: validate_task(invalid_expected_paths_element_type_task),
+agent_stable_task_v2_baseline.py:3975: validate_task(empty_expected_paths_element_task),
+agent_stable_task_v2_baseline.py:3980: validate_task(whitespace_expected_paths_element_task),
+agent_stable_task_v2_baseline.py:3984: validate_task(missing_create_expected_path_task),
+agent_stable_task_v2_baseline.py:3989: validate_task(missing_replace_expected_path_task),
+agent_stable_task_v2_baseline.py:3994: validate_task(extra_expected_path_task),
+agent_stable_task_v2_baseline.py:3998: validate_task(multiple_create_edits_task),
+agent_stable_task_v2_baseline.py:4003: validate_task(multiple_replace_same_path_task),
+agent_stable_task_v2_baseline.py:4008: validate_task(create_replace_different_paths_task),
+agent_stable_task_v2_baseline.py:4013: validate_task(create_replace_same_path_task),
+agent_stable_task_v2_baseline.py:4017: validate_task(None),
+agent_stable_task_v2_baseline.py:4032: invalid_task = Task(
+agent_stable_task_v2_baseline.py:4039: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:4112: Verify that run_task() rejects a Task V2
+agent_stable_task_v2_baseline.py:4116: invalid_task = Task(
+agent_stable_task_v2_baseline.py:4123: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:4195: Verify that run_task() rejects a Task V2
+agent_stable_task_v2_baseline.py:4199: invalid_task = Task(
+agent_stable_task_v2_baseline.py:4206: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:4279: Verify that run_task() rejects a Task V2
+agent_stable_task_v2_baseline.py:4283: invalid_task = Task(
+agent_stable_task_v2_baseline.py:4292: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:4365: Verify that run_task() rejects an edit without
+agent_stable_task_v2_baseline.py:4369: invalid_task = Task(
+agent_stable_task_v2_baseline.py:4380: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:4452: Verify that run_task() accepts a valid create edit
+agent_stable_task_v2_baseline.py:4458: task = Task(
+agent_stable_task_v2_baseline.py:4473: result = run_task(task)
+agent_stable_task_v2_baseline.py:4575: Verify that run_task() accepts a valid replace edit
+agent_stable_task_v2_baseline.py:4633: task = Task(
+agent_stable_task_v2_baseline.py:4654: result = run_task(task)
+agent_stable_task_v2_baseline.py:4879: result = run_task(task)
+agent_stable_task_v2_baseline.py:5038: task = Task(
+agent_stable_task_v2_baseline.py:5075: task = Task(
+agent_stable_task_v2_baseline.py:5129: task = Task(
+agent_stable_task_v2_baseline.py:5174: task = Task(
+agent_stable_task_v2_baseline.py:5272: result = run_task(task)
+agent_stable_task_v2_baseline.py:5431: task = Task(
+agent_stable_task_v2_baseline.py:5475: task = Task(
+agent_stable_task_v2_baseline.py:5528: task = Task(
+agent_stable_task_v2_baseline.py:5583: task = Task(
+agent_stable_task_v2_baseline.py:5631: Verify that run_task() rejects an edit with
+agent_stable_task_v2_baseline.py:5635: invalid_task = Task(
+agent_stable_task_v2_baseline.py:5647: result = run_task(invalid_task)
+agent_stable_task_v2_baseline.py:5720: Verify that run_task() accepts a valid Task V2 as its input.
+agent_stable_task_v2_baseline.py:5747: task = Task(
+agent_stable_task_v2_baseline.py:5750: "Verify successful run_task() execution "
+agent_stable_task_v2_baseline.py:5767: result = run_task(task)
+agent_stable_task_v2_baseline.py:5842: "All run_task(Task V2) "
+agent_stable_task_v2_baseline.py:5857: "run_task(Task V2) cleanup passed."
+agent_stable_task_v2_baseline.py:5892: result = run_task(
+agent_stable_task_v2_baseline.py:5893: Task(
+agent_stable_task_v2_baseline.py:5911: task = Task(
+agent_stable_task_v2_baseline.py:5926: result = run_task(task)
+agent_stable_task_v2_baseline.py:5959: task = Task(
+agent_stable_task_v2_baseline.py:5978: result = run_task(task)
+agent_stable_task_v2_baseline.py:6564: task = Task(
+agent_stable_task_v2_baseline.py:6577: result = run_task(task)
+agent_stable_task_v2_baseline.py:6587: def main():
+agent_stable_task_v2_baseline.py:6812: test_validate_task()
+agent_stable_task_v2_baseline.py:6830: test_validate_task()
+agent_stable_task_v2_baseline.py:6832: test_validate_task()
+agent_stable_task_v2_baseline.py:6834: test_validate_task()
+agent_stable_task_v2_baseline.py:6836: test_validate_task()
+agent_stable_task_v2_baseline.py:6838: test_validate_task()
+agent_stable_task_v2_baseline.py:6840: test_validate_task()
+agent_stable_task_v2_baseline.py:6842: test_validate_task()
+agent_stable_task_v2_baseline.py:6844: test_validate_task()
+agent_stable_task_v2_baseline.py:6846: test_validate_task()
+agent_stable_task_v2_baseline.py:6848: test_validate_task()
+agent_stable_task_v2_baseline.py:6850: test_validate_task()
+agent_stable_task_v2_baseline.py:6852: test_validate_task()
+agent_stable_task_v2_baseline.py:6854: test_validate_task()
+agent_stable_task_v2_baseline.py:6856: test_validate_task()
+agent_stable_task_v2_baseline.py:6858: test_validate_task()
+agent_stable_task_v2_baseline.py:6860: test_validate_task()
+agent_stable_task_v2_baseline.py:6862: test_validate_task()
+agent_stable_task_v2_baseline.py:6864: test_validate_task()
+agent_stable_task_v2_baseline.py:6866: test_validate_task()
+agent_stable_task_v2_baseline.py:6868: test_validate_task()
+agent_stable_task_v2_baseline.py:6870: test_validate_task()
+agent_stable_task_v2_baseline.py:6872: test_validate_task()
+agent_stable_task_v2_baseline.py:6874: test_validate_task()
+agent_stable_task_v2_baseline.py:6876: test_validate_task()
+agent_stable_task_v2_baseline.py:6878: test_validate_task()
+agent_stable_task_v2_baseline.py:6880: test_validate_task()
+agent_stable_task_v2_baseline.py:6882: test_validate_task()
+agent_stable_task_v2_baseline.py:6884: test_validate_task()
+agent_stable_task_v2_baseline.py:6913: if __name__ == "__main__":
+bridge\native_host\debug_task.py:18: task = agent.Task(
+bridge\native_host\debug_task.py:38: result = agent.run_task(task)
+bridge\native_host\host.py:65: def handle_task(message):
+bridge\native_host\host.py:83: task = agent.Task(
+bridge\native_host\host.py:95: result = agent.run_task(task)
+bridge\native_host\host.py:130: def main():
+bridge\native_host\host.py:151: send_message(handle_task(message))
+bridge\native_host\host.py:160: if __name__ == "__main__":
+bridge\tests\bridge_page_probe.py:24: def main():
+bridge\tests\bridge_page_probe.py:61: if __name__ == "__main__":
+bridge\tests\bridge_test_runner.py:1007: window.SimulationAgentBridge.sendTask(task);
+bridge\tests\bridge_test_runner.py:1038: "SimulationAgentBridge.sendTask() "
+bridge\tests\bridge_test_runner.py:1172: await window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:1235: window.SimulationAgentBridge.sendTask(input);
+bridge\tests\bridge_test_runner.py:1343: await window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:1425: window.SimulationAgentBridge.sendTask({
+bridge\tests\bridge_test_runner.py:1433: window.SimulationAgentBridge.sendTask({
+bridge\tests\bridge_test_runner.py:1587: window.SimulationAgentBridge.sendTask({
+bridge\tests\bridge_test_runner.py:1595: window.SimulationAgentBridge.sendTask({
+bridge\tests\bridge_test_runner.py:1743: window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:1827: window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:1949: window.SimulationAgentBridge.sendTask({
+bridge\tests\bridge_test_runner.py:2089: await window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:2147: await window.SimulationAgentBridge.sendTask(
+bridge\tests\bridge_test_runner.py:2387: def main():
+bridge\tests\bridge_test_runner.py:2667: if __name__ == "__main__":
+bridge\tests\browser_harness_probe.py:4: def main():
+bridge\tests\browser_harness_probe.py:23: if __name__ == "__main__":
+bridge\tests\cdp_probe.py:23: def main():
+bridge\tests\cdp_probe.py:59: if __name__ == "__main__":
+patch_task_v3_schema.py:11: def main() -> int:
+patch_task_v3_schema.py:359: if __name__ == "__main__":
+registries\handler_resolver.py:103: def _validate_task(task: TaskV3) -> str | None:
+registries\handler_resolver.py:287: validation_error = self._validate_task(task)
+runtime\execution.py:284: def execute(
+runtime\parallel_batch_executor.py:64: def execute(
+runtime\task_run_executor.py:397: def execute(
+test_openhands.py:8: def main() -> None:
+test_openhands.py:45: if __name__ == "__main__":
+tests\test_assertions.py:693: def main() -> int:
+tests\test_assertions.py:744: if __name__ == "__main__":
+tests\test_cancellation.py:90: def main():
+tests\test_cancellation.py:131: if __name__ == "__main__":
+tests\test_changeset.py:711: def main() -> int:
+tests\test_changeset.py:763: if __name__ == "__main__":
+tests\test_effective_policy_execution.py:67: def make_task() -> TaskV3:
+tests\test_effective_policy_execution.py:182: make_task(),
+tests\test_effective_policy_execution.py:219: make_task(),
+tests\test_effective_policy_execution.py:256: make_task(),
+tests\test_effective_policy_execution.py:296: make_task(),
+tests\test_effective_policy_runtime.py:37: def make_task() -> TaskV3:
+tests\test_effective_policy_runtime.py:136: task=make_task(),
+tests\test_evidence.py:317: def main() -> int:
+tests\test_evidence.py:366: if __name__ == "__main__":
+tests\test_evidence_attempt_isolation.py:61: def make_task(task_id: str) -> TaskV3:
+tests\test_evidence_attempt_isolation.py:174: make_task("attempt-1"),
+tests\test_evidence_attempt_isolation.py:184: make_task("attempt-2"),
+tests\test_evidence_attempt_isolation.py:209: make_task("attempt-1"),
+tests\test_evidence_attempt_isolation.py:219: make_task("attempt-2"),
+tests\test_evidence_attempt_isolation.py:248: make_task("attempt-1"),
+tests\test_evidence_attempt_isolation.py:258: make_task("attempt-2"),
+tests\test_evidence_attempt_isolation.py:293: make_task("attempt-1"),
+tests\test_evidence_attempt_isolation.py:300: make_task("attempt-2"),
+tests\test_evidence_attempt_isolation.py:345: make_task("attempt-1"),
+tests\test_evidence_attempt_isolation.py:365: make_task("attempt-2"),
+tests\test_evidence_identity.py:75: def test_store_rejects_evidence_from_another_task() -> None:
+tests\test_execution.py:63: def make_task() -> TaskV3:
+tests\test_execution.py:138: make_task(),
+tests\test_execution.py:187: task = make_task()
+tests\test_execution.py:480: def main() -> int:
+tests\test_execution.py:526: if __name__ == "__main__":
+tests\test_execution_backend.py:216: def main():
+tests\test_execution_backend.py:257: if __name__ == "__main__":
+tests\test_execution_backend_pipeline.py:46: def make_task() -> TaskV3:
+tests\test_execution_backend_pipeline.py:93: task=make_task(),
+tests\test_execution_backend_pipeline.py:279: def main():
+tests\test_execution_backend_pipeline.py:320: if __name__ == "__main__":
+tests\test_execution_cancellation_pipeline.py:44: def make_task():
+tests\test_execution_cancellation_pipeline.py:55: task=make_task(),
+tests\test_execution_cancellation_pipeline.py:359: def main():
+tests\test_execution_cancellation_pipeline.py:400: if __name__ == "__main__":
+tests\test_execution_outcome.py:62: def make_task() -> TaskV3:
+tests\test_execution_outcome.py:140: make_task(),
+tests\test_execution_outcome.py:169: make_task(),
+tests\test_execution_outcome.py:201: make_task(),
+tests\test_execution_outcome.py:222: make_task(),
+tests\test_execution_outcome.py:252: def main():
+tests\test_execution_outcome.py:293: if __name__ == "__main__":
+tests\test_execution_parallel_pipeline.py:420: def main():
+tests\test_execution_parallel_pipeline.py:461: if __name__ == "__main__":
+tests\test_execution_parallelism.py:250: def main():
+tests\test_execution_parallelism.py:291: if __name__ == "__main__":
+tests\test_execution_plan.py:107: def make_task() -> TaskV3:
+tests\test_execution_plan.py:145: make_task(),
+tests\test_execution_plan.py:321: def test_planning_does_not_mutate_task() -> None:
+tests\test_execution_plan.py:322: task = make_task()
+tests\test_execution_plan.py:352: def main() -> int:
+tests\test_execution_plan.py:398: if __name__ == "__main__":
+tests\test_execution_policy.py:254: def main():
+tests\test_execution_policy.py:295: if __name__ == "__main__":
+tests\test_execution_policy_aggregation.py:296: def main() -> int:
+tests\test_execution_policy_aggregation.py:323: if __name__ == "__main__":
+tests\test_execution_policy_constraints.py:213: def main() -> int:
+tests\test_execution_policy_constraints.py:240: if __name__ == "__main__":
+tests\test_execution_policy_pipeline.py:66: def make_task(
+tests\test_execution_policy_pipeline.py:181: make_task(policy=policy),
+tests\test_execution_policy_pipeline.py:212: make_task(policy=policy),
+tests\test_execution_policy_pipeline.py:236: make_task(policy=policy),
+tests\test_execution_policy_pipeline.py:260: make_task(),
+tests\test_execution_policy_pipeline.py:282: make_task(policy=invalid_policy),
+tests\test_execution_policy_pipeline.py:304: make_task(policy=policy),
+tests\test_execution_policy_pipeline.py:337: def main():
+tests\test_execution_policy_pipeline.py:382: if __name__ == "__main__":
+tests\test_execution_retry.py:268: def main():
+tests\test_execution_retry.py:309: if __name__ == "__main__":
+tests\test_execution_retry_pipeline.py:62: def make_task(
+tests\test_execution_retry_pipeline.py:191: make_task(policy=policy),
+tests\test_execution_retry_pipeline.py:245: make_task(policy=policy),
+tests\test_execution_retry_pipeline.py:289: make_task(policy=policy),
+tests\test_execution_retry_pipeline.py:335: make_task(policy=policy),
+tests\test_execution_retry_pipeline.py:364: make_task(policy=policy),
+tests\test_execution_retry_pipeline.py:381: task = make_task(
+tests\test_execution_retry_pipeline.py:413: def main():
+tests\test_execution_retry_pipeline.py:454: if __name__ == "__main__":
+tests\test_execution_schedule_result.py:43: def make_task() -> TaskV3:
+tests\test_execution_schedule_result.py:88: task=make_task(),
+tests\test_execution_schedule_result.py:288: task=make_task(),
+tests\test_execution_schedule_result.py:317: def main():
+tests\test_execution_schedule_result.py:358: if __name__ == "__main__":
+tests\test_execution_scheduler_pipeline.py:44: def make_task() -> TaskV3:
+tests\test_execution_scheduler_pipeline.py:89: task=make_task(),
+tests\test_execution_scheduler_pipeline.py:346: def main():
+tests\test_execution_scheduler_pipeline.py:387: if __name__ == "__main__":
+tests\test_execution_timeout.py:268: def main():
+tests\test_execution_timeout.py:309: if __name__ == "__main__":
+tests\test_execution_timeout_pipeline.py:68: def make_task(
+tests\test_execution_timeout_pipeline.py:194: make_task(
+tests\test_execution_timeout_pipeline.py:238: make_task(
+tests\test_execution_timeout_pipeline.py:272: make_task(
+tests\test_execution_timeout_pipeline.py:312: make_task(
+tests\test_execution_timeout_pipeline.py:348: make_task(
+tests\test_execution_timeout_pipeline.py:366: def test_timeout_does_not_mutate_task():
+tests\test_execution_timeout_pipeline.py:373: task = make_task(
+tests\test_execution_timeout_pipeline.py:402: def main():
+tests\test_execution_timeout_pipeline.py:443: if __name__ == "__main__":
+tests\test_expected.py:560: def main() -> int:
+tests\test_expected.py:611: if __name__ == "__main__":
+tests\test_goal_registry.py:216: def main() -> int:
+tests\test_goal_registry.py:258: if __name__ == "__main__":
+tests\test_goal_resolver.py:248: def main() -> int:
+tests\test_goal_resolver.py:292: if __name__ == "__main__":
+tests\test_handler_policy_pipeline.py:69: def make_task() -> TaskV3:
+tests\test_handler_policy_pipeline.py:185: make_task(),
+tests\test_handler_policy_pipeline.py:221: make_task(),
+tests\test_handler_policy_pipeline.py:256: make_task(),
+tests\test_handler_policy_pipeline.py:285: make_task(),
+tests\test_handler_policy_pipeline.py:326: make_task(),
+tests\test_handler_resolver.py:42: def make_task(
+tests\test_handler_resolver.py:103: result = resolver.resolve(make_task())
+tests\test_handler_resolver.py:114: task = make_task()
+tests\test_handler_resolver.py:155: make_task(TaskOperation.CHANGE)
+tests\test_handler_resolver.py:159: make_task(TaskOperation.VERIFY)
+tests\test_handler_resolver.py:183: make_task(target_kind=TargetKind.PROJECT)
+tests\test_handler_resolver.py:187: make_task(target_kind=TargetKind.FILE)
+tests\test_handler_resolver.py:211: make_task(),
+tests\test_handler_resolver.py:216: make_task(),
+tests\test_handler_resolver.py:257: make_task(TaskOperation.CHANGE)
+tests\test_handler_resolver.py:293: make_task(TaskOperation.CHANGE)
+tests\test_handler_resolver.py:327: make_task(TaskOperation.CHANGE)
+tests\test_handler_resolver.py:363: make_task(TaskOperation.CHANGE)
+tests\test_handler_resolver.py:453: result = resolver.resolve(make_task())
+tests\test_handler_resolver.py:473: result = resolver.resolve(make_task())
+tests\test_handler_resolver.py:486: task = make_task()
+tests\test_handler_resolver.py:507: def main() -> int:
+tests\test_handler_resolver.py:554: if __name__ == "__main__":
+tests\test_parallel_batch_cancellation.py:200: def main():
+tests\test_parallel_batch_cancellation.py:241: if __name__ == "__main__":
+tests\test_parallel_batch_executor.py:434: def main():
+tests\test_parallel_batch_executor.py:475: if __name__ == "__main__":
+tests\test_parallel_execution_backend.py:317: def main():
+tests\test_parallel_execution_backend.py:358: if __name__ == "__main__":
+tests\test_post_execution_pipeline.py:137: def make_task(
+tests\test_post_execution_pipeline.py:210: task = make_task(
+tests\test_post_execution_pipeline.py:273: task = make_task(
+tests\test_post_execution_pipeline.py:335: task = make_task(
+tests\test_post_execution_pipeline.py:379: task = make_task(
+tests\test_post_execution_pipeline.py:427: task = make_task(
+tests\test_post_execution_pipeline.py:481: task = make_task(
+tests\test_post_execution_pipeline.py:536: task = make_task(
+tests\test_post_execution_pipeline.py:602: task = make_task(
+tests\test_post_execution_pipeline.py:655: def main() -> int:
+tests\test_post_execution_pipeline.py:697: if __name__ == "__main__":
+tests\test_preconditions.py:33: def make_task(
+tests\test_preconditions.py:84: make_task()
+tests\test_preconditions.py:104: task = make_task(
+tests\test_preconditions.py:134: task = make_task(
+tests\test_preconditions.py:159: task = make_task(
+tests\test_preconditions.py:194: task = make_task(
+tests\test_preconditions.py:229: make_task(),
+tests\test_preconditions.py:253: make_task(),
+tests\test_preconditions.py:290: task = make_task(
+tests\test_preconditions.py:334: task = make_task(
+tests\test_preconditions.py:393: task = make_task(
+tests\test_preconditions.py:418: task = make_task(
+tests\test_preconditions.py:459: task = make_task(
+tests\test_preconditions.py:478: def main() -> int:
+tests\test_preconditions.py:525: if __name__ == "__main__":
+tests\test_resource_admission.py:262: def main():
+tests\test_resource_admission.py:303: if __name__ == "__main__":
+tests\test_resource_admission_pipeline.py:304: def main():
+tests\test_resource_admission_pipeline.py:345: if __name__ == "__main__":
+tests\test_resource_policy.py:200: def main():
+tests\test_resource_policy.py:241: if __name__ == "__main__":
+tests\test_resource_requirements.py:177: def main():
+tests\test_resource_requirements.py:218: if __name__ == "__main__":
+tests\test_target_resolver.py:268: def main() -> int:
+tests\test_target_resolver.py:313: if __name__ == "__main__":
+tests\test_task_outcome.py:465: def main() -> int:
+tests\test_task_outcome.py:520: if __name__ == "__main__":
+tests\test_task_pipeline.py:68: def make_task(
+tests\test_task_pipeline.py:211: task = make_task()
+tests\test_task_pipeline.py:240: task = make_task()
+tests\test_task_pipeline.py:273: task = make_task()
+tests\test_task_pipeline.py:296: task = make_task()
+tests\test_task_pipeline.py:344: task = make_task()
+tests\test_task_pipeline.py:370: task = make_task()
+tests\test_task_pipeline.py:403: def main() -> int:
+tests\test_task_pipeline.py:443: if __name__ == "__main__":
+tests\test_task_resolution.py:129: def make_task(
+tests\test_task_resolution.py:179: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:201: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:225: make_task(),
+tests\test_task_resolution.py:230: make_task(),
+tests\test_task_resolution.py:259: make_task(
+tests\test_task_resolution.py:285: make_task(
+tests\test_task_resolution.py:312: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:362: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:383: make_task(
+tests\test_task_resolution.py:402: valid_task = make_task()
+tests\test_task_resolution.py:424: make_task(
+tests\test_task_resolution.py:444: task = make_task()
+tests\test_task_resolution.py:450: def test_resolution_does_not_mutate_task() -> None:
+tests\test_task_resolution.py:453: task = make_task()
+tests\test_task_resolution.py:477: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:494: result = resolver.resolve(make_task())
+tests\test_task_resolution.py:502: def main() -> int:
+tests\test_task_resolution.py:550: if __name__ == "__main__":
+tests\test_task_run.py:50: def make_task() -> TaskV3:
+tests\test_task_run.py:83: task=make_task(),
+tests\test_task_run.py:94: run = TaskRun(make_task())
+tests\test_task_run.py:104: run = TaskRun(make_task())
+tests\test_task_run.py:112: run = TaskRun(make_task())
+tests\test_task_run.py:153: run = TaskRun(make_task())
+tests\test_task_run.py:179: run = TaskRun(make_task())
+tests\test_task_run.py:203: run = TaskRun(make_task())
+tests\test_task_run.py:218: run = TaskRun(make_task())
+tests\test_task_run.py:231: run = TaskRun(make_task())
+tests\test_task_run.py:244: run = TaskRun(make_task())
+tests\test_task_run.py:258: task = make_task()
+tests\test_task_run.py:266: run = TaskRun(make_task())
+tests\test_task_run.py:277: run = TaskRun(make_task())
+tests\test_task_run.py:297: run = TaskRun(make_task())
+tests\test_task_run.py:350: run = TaskRun(make_task())
+tests\test_task_run.py:374: def test_task_run_does_not_modify_task() -> None:
+tests\test_task_run.py:375: task = make_task()
+tests\test_task_run.py:397: run = TaskRun(make_task())
+tests\test_task_run.py:406: def main() -> int:
+tests\test_task_run.py:456: if __name__ == "__main__":
+tests\test_task_run_attempt_lifecycle.py:66: def make_task() -> TaskV3:
+tests\test_task_run_attempt_lifecycle.py:167: task = make_task()
+tests\test_task_run_attempt_lifecycle.py:199: task = make_task()
+tests\test_task_run_attempt_lifecycle.py:234: task = make_task()
+tests\test_task_run_attempt_lifecycle.py:270: task = make_task()
+tests\test_task_run_attempt_lifecycle.py:309: task = make_task()
+tests\test_task_run_attempt_lifecycle.py:342: task = make_task()
+tests\test_task_run_cancellation_pipeline.py:71: def make_task() -> TaskV3:
+tests\test_task_run_cancellation_pipeline.py:154: make_task(),
+tests\test_task_run_cancellation_pipeline.py:186: def execute(
+tests\test_task_run_cancellation_pipeline.py:213: make_task(),
+tests\test_task_run_cancellation_pipeline.py:247: make_task(),
+tests\test_task_run_cancellation_pipeline.py:277: make_task(),
+tests\test_task_run_cancellation_pipeline.py:298: make_task(),
+tests\test_task_run_cancellation_pipeline.py:321: def main():
+tests\test_task_run_cancellation_pipeline.py:362: if __name__ == "__main__":
+tests\test_task_run_contract_audit.py:82: def make_task(
+tests\test_task_run_contract_audit.py:202: make_task(),
+tests\test_task_run_contract_audit.py:229: task=make_task()
+tests\test_task_run_contract_audit.py:283: make_task(
+tests\test_task_run_contract_audit.py:311: make_task(),
+tests\test_task_run_contract_audit.py:366: make_task(),
+tests\test_task_run_contract_audit.py:391: make_task(),
+tests\test_task_run_contract_audit.py:410: make_task(
+tests\test_task_run_contract_audit.py:421: task=make_task(
+tests\test_task_run_contract_audit.py:475: make_task(
+tests\test_task_run_contract_audit.py:519: make_task(
+tests\test_task_run_contract_audit.py:590: make_task(
+tests\test_task_run_contract_audit.py:639: make_task(
+tests\test_task_run_contract_audit.py:707: make_task(
+tests\test_task_run_contract_audit.py:747: make_task(),
+tests\test_task_run_contract_audit.py:802: make_task(
+tests\test_task_run_contract_audit.py:841: def main() -> int:
+tests\test_task_run_contract_audit.py:886: if __name__ == "__main__":
+tests\test_task_run_execution_mapping.py:40: def make_task() -> TaskV3:
+tests\test_task_run_execution_mapping.py:70: task=make_task(),
+tests\test_task_run_execution_mapping.py:78: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:100: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:122: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:144: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:166: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:191: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:213: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:238: def main():
+tests\test_task_run_execution_mapping.py:279: if __name__ == "__main__":
+tests\test_task_run_executor.py:71: def make_task() -> TaskV3:
+tests\test_task_run_executor.py:184: make_task(),
+tests\test_task_run_executor.py:201: make_task(),
+tests\test_task_run_executor.py:225: make_task(),
+tests\test_task_run_executor.py:242: make_task(),
+tests\test_task_run_executor.py:286: make_task(),
+tests\test_task_run_executor.py:310: make_task(),
+tests\test_task_run_executor.py:343: make_task(),
+tests\test_task_run_executor.py:363: make_task(),
+tests\test_task_run_executor.py:380: make_task(),
+tests\test_task_run_executor.py:393: make_task(),
+tests\test_task_run_executor.py:405: task = make_task()
+tests\test_task_run_executor.py:428: make_task(),
+tests\test_task_run_executor.py:447: def test_executor_does_not_mutate_task() -> None:
+tests\test_task_run_executor.py:450: task = make_task()
+tests\test_task_run_executor.py:482: task = make_task()
+tests\test_task_run_executor.py:680: def main() -> int:
+tests\test_task_run_executor.py:730: if __name__ == "__main__":
+tests\test_task_run_policy_isolation.py:66: def make_task(task_id: str) -> TaskV3:
+tests\test_task_run_policy_isolation.py:159: make_task("attempt-1"),
+tests\test_task_run_policy_isolation.py:182: make_task("attempt-2"),
+tests\test_task_run_policy_isolation.py:210: make_task("attempt-1"),
+tests\test_task_run_policy_isolation.py:230: make_task("attempt-2"),
+tests\test_task_run_policy_isolation.py:256: make_task("attempt-1"),
+tests\test_task_run_policy_isolation.py:274: make_task("attempt-2"),
+tests\test_task_run_state_mapper.py:111: def main():
+tests\test_task_run_state_mapper.py:152: if __name__ == "__main__":
+tests\test_task_run_state_model.py:33: def make_task() -> TaskV3:
+tests\test_task_run_state_model.py:58: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:69: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:75: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:86: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:101: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:114: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:126: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:141: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:156: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:167: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:182: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:199: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:220: def main():
+tests\test_task_run_state_model.py:261: if __name__ == "__main__":
+tests\test_task_run_terminal_lifecycle.py:67: def make_task() -> TaskV3:
+tests\test_task_run_terminal_lifecycle.py:155: make_task(),
+tests\test_task_run_terminal_lifecycle.py:170: make_task(),
+tests\test_task_run_terminal_lifecycle.py:189: make_task(),
+tests\test_task_run_terminal_lifecycle.py:216: make_task(),
+tests\test_task_run_terminal_lifecycle.py:246: make_task(),
+tests\test_task_run_terminal_lifecycle.py:268: make_task(),
+tests\test_task_run_terminal_lifecycle.py:280: make_task(),
+tests\test_task_v3_model.py:45: def make_base_task() -> TaskV3:
+tests\test_task_v3_model.py:79: task = make_base_task()
+tests\test_task_v3_model.py:175: def test_complete_task() -> None:
+tests\test_task_v3_model.py:176: task = make_base_task()
+tests\test_task_v3_model.py:264: task = make_base_task()
+tests\test_task_v3_model.py:348: def main() -> None:
+tests\test_task_v3_model.py:391: if __name__ == "__main__":
+tests\test_task_v3_schema.py:35: def make_base_task() -> dict:
+tests\test_task_v3_schema.py:110: make_base_task(),
+tests\test_task_v3_schema.py:114: task = make_base_task()
+tests\test_task_v3_schema.py:124: task = make_base_task()
+tests\test_task_v3_schema.py:137: task = make_base_task()
+tests\test_task_v3_schema.py:149: task = make_base_task()
+tests\test_task_v3_schema.py:168: task = make_base_task()
+tests\test_task_v3_schema.py:208: task = make_base_task()
+tests\test_task_v3_schema.py:240: task = make_base_task()
+tests\test_task_v3_schema.py:285: task = make_base_task()
+tests\test_task_v3_schema.py:329: task = make_base_task()
+tests\test_task_v3_schema.py:338: task = make_base_task()
+tests\test_task_v3_schema.py:347: task = make_base_task()
+tests\test_task_v3_schema.py:356: task = make_base_task()
+tests\test_task_v3_schema.py:365: task = make_base_task()
+tests\test_task_v3_schema.py:374: task = make_base_task()
+tests\test_task_v3_schema.py:383: task = make_base_task()
+tests\test_task_v3_schema.py:392: task = make_base_task()
+tests\test_task_v3_schema.py:401: task = make_base_task()
+tests\test_task_v3_schema.py:410: task = make_base_task()
+tests\test_task_v3_schema.py:419: task = make_base_task()
+tests\test_task_v3_schema.py:428: task = make_base_task()
+tests\test_task_v3_schema.py:437: task = make_base_task()
+tests\test_task_v3_schema.py:456: task = make_base_task()
+tests\test_task_v3_schema.py:478: task = make_base_task()
+tests\test_task_v3_schema.py:505: task = make_base_task()
+tests\test_task_v3_schema.py:526: task = make_base_task()
+tests\test_task_v3_schema.py:544: task = make_base_task()
+tests\test_task_v3_schema.py:553: task = make_base_task()
+tests\test_task_v3_schema.py:562: task = make_base_task()
+tests\test_task_v3_schema.py:568: task = make_base_task()
+tests\test_task_v3_schema.py:595: task = make_base_task()
+tests\test_task_v3_schema.py:622: task = make_base_task()
+tests\test_task_v3_schema.py:664: def run() -> int:
+tests\test_task_v3_schema.py:752: if __name__ == "__main__":
+tests\test_task_v3_schema_model_roundtrip.py:26: def make_base_task() -> dict:
+tests\test_task_v3_schema_model_roundtrip.py:79: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:82: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:88: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:97: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:105: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:120: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:156: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:184: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:226: task = make_base_task()
+tests\test_task_v3_schema_model_roundtrip.py:289: def main() -> int:
+tests\test_task_v3_schema_model_roundtrip.py:346: if __name__ == "__main__":
+tests\test_task_v3_validation.py:29: def make_valid_task() -> TaskV3:
+tests\test_task_v3_validation.py:59: def test_valid_task() -> None:
+tests\test_task_v3_validation.py:60: result = validate_task_v3(make_valid_task())
+tests\test_task_v3_validation.py:67: task = make_valid_task()
+tests\test_task_v3_validation.py:85: base = make_valid_task()
+tests\test_task_v3_validation.py:112: base = make_valid_task()
+tests\test_task_v3_validation.py:157: base = make_valid_task()
+tests\test_task_v3_validation.py:202: base = make_valid_task()
+tests\test_task_v3_validation.py:232: base = make_valid_task()
+tests\test_task_v3_validation.py:259: def main() -> int:
+tests\test_task_v3_validation.py:298: if __name__ == "__main__":
+tests\test_transaction_execution_policy.py:120: def main() -> int:
+tests\test_transaction_execution_policy.py:147: if __name__ == "__main__":
+tests\test_transaction_policy_pipeline.py:65: def make_task() -> TaskV3:
+tests\test_transaction_policy_pipeline.py:196: make_task(),
+tests\test_transaction_policy_pipeline.py:246: make_task(),
+tests\test_transaction_policy_pipeline.py:277: make_task(),
+tests\test_transaction_policy_pipeline.py:307: make_task(),
+tests\test_transaction_policy_pipeline.py:340: make_task(),
+tests\test_validation.py:639: def main() -> int:
+tests\test_validation.py:689: if __name__ == "__main__":
+
+======================================================================

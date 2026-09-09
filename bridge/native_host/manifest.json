@@ -1,0 +1,9 @@
+{
+  "name": "com.simulationagent.bridge",
+  "description": "Native messaging host for SimulationAgent Bridge.",
+  "path": "C:\\Users\\Gycha\\SimulationAgent\\bridge\\native_host\\host.cmd",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://aoeblphkogmfbpifadphbeodebdjcebc/"
+  ]
+}

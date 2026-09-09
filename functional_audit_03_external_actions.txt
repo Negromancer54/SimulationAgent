@@ -1,0 +1,344 @@
+﻿3. REAL EXTERNAL ACTIONS
+======================================================================
+agent.py:4: import subprocess
+agent.py:12: PROJECT_ROOT = Path(r"C:\Users\Gycha\SimulationZero-Cpp").resolve()
+agent.py:14: AGENT_ROOT = Path(__file__).resolve().parent
+agent.py:19: Path(
+agent.py:23: Path(
+agent.py:346: process = subprocess.run(
+agent.py:379: except subprocess.TimeoutExpired as exc:
+agent.py:431: def resolve_project_path(relative_path):
+agent.py:647: path = resolve_project_path(relative_path)
+agent.py:662: text = path.read_text(
+agent.py:688: path = resolve_project_path(relative_path)
+agent.py:715: text = path.read_text(
+agent.py:750: path.write_text(
+agent.py:767: Return paths changed in the current Git working tree.
+agent.py:778: None if Git execution failed.
+agent.py:788: print("ERROR: Could not read Git status.")
+agent.py:803: # Git rename/copy entries can contain:
+agent.py:1028: path = resolve_project_path(edit["path"])
+agent.py:1046: path.write_text(
+agent.py:1118: "Could not read Git diff.",
+agent.py:1141: print("Git diff captured successfully.")
+agent.py:1148: print("WARNING: Git diff is empty.")
+agent.py:1860: Verify that a Git diff failure produces DIFF_FAILED
+agent.py:2574: test_file.write_text(
+agent.py:4029: before Git precheck and checkpoint creation.
+agent.py:4113: with an invalid edits type before Git precheck.
+agent.py:4196: with an invalid expected_paths type before Git precheck.
+agent.py:4280: containing a non-dictionary edit before Git precheck.
+agent.py:4366: a valid type field before Git precheck.
+agent.py:4491: created_path = resolve_project_path(test_path)
+agent.py:4494: assert created_path.read_text(
+agent.py:4579: a temporary Git commit. After the test, the repository is
+agent.py:4596: test_file = resolve_project_path(test_path)
+agent.py:4601: test_file.write_text(
+agent.py:4678: assert test_file.read_text(
+agent.py:4752: test_file.read_text(
+agent.py:4844: test_file = resolve_project_path(path)
+agent.py:4846: test_file.write_text(
+agent.py:4897: test_file = resolve_project_path(path)
+agent.py:4901: assert test_file.read_text(
+agent.py:4967: test_file = resolve_project_path(path)
+agent.py:4971: test_file.read_text(
+agent.py:5067: def test_run_task_multiple_replace_same_path():
+agent.py:5166: def test_run_task_create_replace_same_path():
+agent.py:5237: test_file = resolve_project_path(path)
+agent.py:5239: test_file.write_text(
+agent.py:5287: test_file = resolve_project_path(path)
+agent.py:5291: assert test_file.read_text(
+agent.py:5296: test_file = resolve_project_path(path)
+agent.py:5353: test_file = resolve_project_path(path)
+agent.py:5357: test_file.read_text(
+agent.py:5363: test_file = resolve_project_path(path)
+agent.py:5632: an unsupported type before Git precheck.
+agent.py:6044: path = resolve_project_path(relative_path)
+agent.py:6057: path.write_text(
+agent.py:6089: lines = path.read_text(
+agent.py:6111: # Git helpers
+agent.py:6116: ["git"] + arguments,
+agent.py:6124: result = subprocess.run(
+agent.py:6125: ["git", "status", "--porcelain"],
+agent.py:6141: result = subprocess.run(
+agent.py:6142: ["git", "rev-parse", "HEAD"],
+agent.py:6164: result = subprocess.run(
+agent.py:6166: "git",
+agent.py:6192: CHECKPOINT_FILE.write_text(
+agent.py:6209: commit = CHECKPOINT_FILE.read_text(
+agent.py:6230: # Git status
+agent.py:6234: print_header("GIT STATUS")
+agent.py:6257: # Git checkpoint
+agent.py:6261: print_header("CREATE GIT CHECKPOINT")
+agent.py:6266: print("ERROR: Could not execute Git.")
+agent.py:6270: print("ERROR: Could not read Git working tree.")
+agent.py:6286: print("ERROR: Could not determine current Git commit.")
+agent.py:6315: # Git diff
+agent.py:6319: print_header("GIT DIFF")
+agent.py:6332: - tracked Git diff
+agent.py:6339: None if Git execution failed.
+agent.py:6349: print("ERROR: Could not read Git diff.")
+agent.py:6361: print("ERROR: Could not read Git status.")
+agent.py:6378: path = resolve_project_path(relative_path)
+agent.py:6404: content = path.read_text(
+agent.py:6431: # All Git changes
+agent.py:6435: print_header("ALL GIT CHANGES")
+agent.py:6485: # Git rollback
+agent.py:6506: print("ERROR: Could not determine current Git commit.")
+agent.py:6537: print("ERROR: Git reset failed.")
+agent.py:6550: print("ERROR: Git clean failed.")
+agent.py:6602: print("6. Git status")
+agent.py:6604: print("8. Show Git diff")
+agent.py:6888: test_run_task_multiple_replace_same_path()
+agent.py:6892: test_run_task_create_replace_same_path()
+agent_stable_task_v2_baseline.py:4: import subprocess
+agent_stable_task_v2_baseline.py:12: PROJECT_ROOT = Path(r"C:\Users\Gycha\SimulationZero-Cpp").resolve()
+agent_stable_task_v2_baseline.py:14: AGENT_ROOT = Path(__file__).resolve().parent
+agent_stable_task_v2_baseline.py:19: Path(
+agent_stable_task_v2_baseline.py:23: Path(
+agent_stable_task_v2_baseline.py:346: process = subprocess.run(
+agent_stable_task_v2_baseline.py:379: except subprocess.TimeoutExpired as exc:
+agent_stable_task_v2_baseline.py:431: def resolve_project_path(relative_path):
+agent_stable_task_v2_baseline.py:647: path = resolve_project_path(relative_path)
+agent_stable_task_v2_baseline.py:662: text = path.read_text(
+agent_stable_task_v2_baseline.py:688: path = resolve_project_path(relative_path)
+agent_stable_task_v2_baseline.py:715: text = path.read_text(
+agent_stable_task_v2_baseline.py:750: path.write_text(
+agent_stable_task_v2_baseline.py:767: Return paths changed in the current Git working tree.
+agent_stable_task_v2_baseline.py:778: None if Git execution failed.
+agent_stable_task_v2_baseline.py:788: print("ERROR: Could not read Git status.")
+agent_stable_task_v2_baseline.py:803: # Git rename/copy entries can contain:
+agent_stable_task_v2_baseline.py:1028: path = resolve_project_path(edit["path"])
+agent_stable_task_v2_baseline.py:1046: path.write_text(
+agent_stable_task_v2_baseline.py:1118: "Could not read Git diff.",
+agent_stable_task_v2_baseline.py:1141: print("Git diff captured successfully.")
+agent_stable_task_v2_baseline.py:1148: print("WARNING: Git diff is empty.")
+agent_stable_task_v2_baseline.py:1860: Verify that a Git diff failure produces DIFF_FAILED
+agent_stable_task_v2_baseline.py:2574: test_file.write_text(
+agent_stable_task_v2_baseline.py:4029: before Git precheck and checkpoint creation.
+agent_stable_task_v2_baseline.py:4113: with an invalid edits type before Git precheck.
+agent_stable_task_v2_baseline.py:4196: with an invalid expected_paths type before Git precheck.
+agent_stable_task_v2_baseline.py:4280: containing a non-dictionary edit before Git precheck.
+agent_stable_task_v2_baseline.py:4366: a valid type field before Git precheck.
+agent_stable_task_v2_baseline.py:4491: created_path = resolve_project_path(test_path)
+agent_stable_task_v2_baseline.py:4494: assert created_path.read_text(
+agent_stable_task_v2_baseline.py:4579: a temporary Git commit. After the test, the repository is
+agent_stable_task_v2_baseline.py:4596: test_file = resolve_project_path(test_path)
+agent_stable_task_v2_baseline.py:4601: test_file.write_text(
+agent_stable_task_v2_baseline.py:4678: assert test_file.read_text(
+agent_stable_task_v2_baseline.py:4752: test_file.read_text(
+agent_stable_task_v2_baseline.py:4844: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:4846: test_file.write_text(
+agent_stable_task_v2_baseline.py:4897: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:4901: assert test_file.read_text(
+agent_stable_task_v2_baseline.py:4967: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:4971: test_file.read_text(
+agent_stable_task_v2_baseline.py:5067: def test_run_task_multiple_replace_same_path():
+agent_stable_task_v2_baseline.py:5166: def test_run_task_create_replace_same_path():
+agent_stable_task_v2_baseline.py:5237: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:5239: test_file.write_text(
+agent_stable_task_v2_baseline.py:5287: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:5291: assert test_file.read_text(
+agent_stable_task_v2_baseline.py:5296: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:5353: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:5357: test_file.read_text(
+agent_stable_task_v2_baseline.py:5363: test_file = resolve_project_path(path)
+agent_stable_task_v2_baseline.py:5632: an unsupported type before Git precheck.
+agent_stable_task_v2_baseline.py:6044: path = resolve_project_path(relative_path)
+agent_stable_task_v2_baseline.py:6057: path.write_text(
+agent_stable_task_v2_baseline.py:6089: lines = path.read_text(
+agent_stable_task_v2_baseline.py:6111: # Git helpers
+agent_stable_task_v2_baseline.py:6116: ["git"] + arguments,
+agent_stable_task_v2_baseline.py:6124: result = subprocess.run(
+agent_stable_task_v2_baseline.py:6125: ["git", "status", "--porcelain"],
+agent_stable_task_v2_baseline.py:6141: result = subprocess.run(
+agent_stable_task_v2_baseline.py:6142: ["git", "rev-parse", "HEAD"],
+agent_stable_task_v2_baseline.py:6164: result = subprocess.run(
+agent_stable_task_v2_baseline.py:6166: "git",
+agent_stable_task_v2_baseline.py:6192: CHECKPOINT_FILE.write_text(
+agent_stable_task_v2_baseline.py:6209: commit = CHECKPOINT_FILE.read_text(
+agent_stable_task_v2_baseline.py:6230: # Git status
+agent_stable_task_v2_baseline.py:6234: print_header("GIT STATUS")
+agent_stable_task_v2_baseline.py:6257: # Git checkpoint
+agent_stable_task_v2_baseline.py:6261: print_header("CREATE GIT CHECKPOINT")
+agent_stable_task_v2_baseline.py:6266: print("ERROR: Could not execute Git.")
+agent_stable_task_v2_baseline.py:6270: print("ERROR: Could not read Git working tree.")
+agent_stable_task_v2_baseline.py:6286: print("ERROR: Could not determine current Git commit.")
+agent_stable_task_v2_baseline.py:6315: # Git diff
+agent_stable_task_v2_baseline.py:6319: print_header("GIT DIFF")
+agent_stable_task_v2_baseline.py:6332: - tracked Git diff
+agent_stable_task_v2_baseline.py:6339: None if Git execution failed.
+agent_stable_task_v2_baseline.py:6349: print("ERROR: Could not read Git diff.")
+agent_stable_task_v2_baseline.py:6361: print("ERROR: Could not read Git status.")
+agent_stable_task_v2_baseline.py:6378: path = resolve_project_path(relative_path)
+agent_stable_task_v2_baseline.py:6404: content = path.read_text(
+agent_stable_task_v2_baseline.py:6431: # All Git changes
+agent_stable_task_v2_baseline.py:6435: print_header("ALL GIT CHANGES")
+agent_stable_task_v2_baseline.py:6485: # Git rollback
+agent_stable_task_v2_baseline.py:6506: print("ERROR: Could not determine current Git commit.")
+agent_stable_task_v2_baseline.py:6537: print("ERROR: Git reset failed.")
+agent_stable_task_v2_baseline.py:6550: print("ERROR: Git clean failed.")
+agent_stable_task_v2_baseline.py:6602: print("6. Git status")
+agent_stable_task_v2_baseline.py:6604: print("8. Show Git diff")
+agent_stable_task_v2_baseline.py:6888: test_run_task_multiple_replace_same_path()
+agent_stable_task_v2_baseline.py:6892: test_run_task_create_replace_same_path()
+agent_task_v3.py:445: return ChangeRecordPath(
+bridge\native_host\debug_task.py:6: AGENT_ROOT = Path(r"C:\Users\Gycha\SimulationAgent")
+bridge\native_host\host.py:9: AGENT_ROOT = Path(r"C:\Users\Gycha\SimulationAgent")
+bridge\native_host\host.py:10: LOG_FILE = Path(
+bridge\native_host\host.py:16: with LOG_FILE.open(
+bridge\tests\bridge_test_runner.py:3: import subprocess
+bridge\tests\bridge_test_runner.py:8: CONTRACT_FILE = Path(
+bridge\tests\bridge_test_runner.py:12: HOST_CMD = Path(
+bridge\tests\bridge_test_runner.py:15: PROJECT_ROOT = Path(
+bridge\tests\bridge_test_runner.py:19: CHECKPOINT_FILE = Path(
+bridge\tests\bridge_test_runner.py:53: with CONTRACT_FILE.open(
+bridge\tests\bridge_test_runner.py:335: return subprocess.Popen(
+bridge\tests\bridge_test_runner.py:339: stdin=subprocess.PIPE,
+bridge\tests\bridge_test_runner.py:340: stdout=subprocess.PIPE,
+bridge\tests\bridge_test_runner.py:341: stderr=subprocess.PIPE,
+bridge\tests\bridge_test_runner.py:353: except subprocess.TimeoutExpired:
+bridge\tests\bridge_test_runner.py:402: result = subprocess.run(
+bridge\tests\bridge_test_runner.py:404: "git",
+bridge\tests\bridge_test_runner.py:418: "Failed to query Git status: "
+bridge\tests\bridge_test_runner.py:481: def get_value_by_path(data, path):
+bridge\tests\bridge_test_runner.py:496: actual = get_value_by_path(
+bridge\tests\browser_harness.py:49: with urllib.request.urlopen(
+bridge\tests\cdp_probe.py:7: with urllib.request.urlopen(
+patch_task_v3_schema.py:7: ROOT = Path(__file__).resolve().parent
+patch_task_v3_schema.py:16: with SCHEMA_PATH.open("r", encoding="utf-8") as f:
+patch_task_v3_schema.py:350: with SCHEMA_PATH.open("w", encoding="utf-8", newline="\n") as f:
+runtime\changeset.py:326: return ChangeRecordPath(
+runtime\task_run_executor.py:160: def _fail_run(
+runtime\task_run_executor.py:428: run = TaskRun(task)
+runtime\task_run_executor.py:444: return self._fail_run(
+runtime\task_run_executor.py:467: return self._fail_run(
+runtime\task_run_executor.py:490: return self._fail_run(
+runtime\task_run_executor.py:513: return self._fail_run(
+runtime\task_run_executor.py:546: return self._fail_run(
+runtime\task_run_executor.py:617: return self._fail_run(
+runtime\task_run_executor.py:634: return self._fail_run(
+runtime\task_run_executor.py:644: return self._fail_run(
+test_openhands.py:9: workspace = os.path.abspath("openhands_sandbox")
+test_openhands.py:40: conversation.run()
+tests\test_assertions.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_cancellation.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_changeset.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_effective_policy_execution.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_effective_policy_runtime.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence.py:89: def test_store_belongs_to_one_task_run() -> None:
+tests\test_evidence_attempt_isolation.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_attempt_isolation.py:341: def test_terminal_attempt_keeps_its_evidence_after_next_run() -> None:
+tests\test_evidence_evaluation_contract.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_failure_semantics.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_identity.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_immutability.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_provenance.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_evidence_timestamp.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_backend.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_backend_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_cancellation_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_outcome.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_parallel_pipeline.py:9: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_parallelism.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_plan.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_policy.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_policy_aggregation.py:4: PROJECT_ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_policy_constraints.py:4: PROJECT_ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_policy_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_policy_pipeline.py:173: def test_task_policy_reaches_task_run():
+tests\test_execution_retry.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_retry_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_schedule_result.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_scheduler_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_timeout.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_execution_timeout_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_expected.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_goal_registry.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_goal_resolver.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_handler_policy_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_handler_policy_pipeline.py:166: def test_selected_handler_policy_reaches_task_run() -> None:
+tests\test_handler_resolver.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_parallel_batch_cancellation.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_parallel_batch_executor.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_parallel_execution_backend.py:9: ROOT = Path(__file__).resolve().parents[1]
+tests\test_post_execution_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_preconditions.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_resource_admission.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_resource_admission_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_resource_policy.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_resource_requirements.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_target_resolver.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_outcome.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_resolution.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run.py:94: run = TaskRun(make_task())
+tests\test_task_run.py:104: run = TaskRun(make_task())
+tests\test_task_run.py:112: run = TaskRun(make_task())
+tests\test_task_run.py:153: run = TaskRun(make_task())
+tests\test_task_run.py:179: run = TaskRun(make_task())
+tests\test_task_run.py:203: run = TaskRun(make_task())
+tests\test_task_run.py:218: run = TaskRun(make_task())
+tests\test_task_run.py:231: run = TaskRun(make_task())
+tests\test_task_run.py:244: run = TaskRun(make_task())
+tests\test_task_run.py:259: run = TaskRun(task)
+tests\test_task_run.py:265: def test_evidence_store_remains_owned_by_run() -> None:
+tests\test_task_run.py:266: run = TaskRun(make_task())
+tests\test_task_run.py:277: run = TaskRun(make_task())
+tests\test_task_run.py:296: def test_outcome_can_mark_successful_run() -> None:
+tests\test_task_run.py:297: run = TaskRun(make_task())
+tests\test_task_run.py:350: run = TaskRun(make_task())
+tests\test_task_run.py:384: TaskRun(task)
+tests\test_task_run.py:397: run = TaskRun(make_task())
+tests\test_task_run_attempt_lifecycle.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_cancellation_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_cancellation_pipeline.py:143: def test_cancelled_before_execution_reaches_task_run():
+tests\test_task_run_contract_audit.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_contract_audit.py:227: def test_invalid_transition_does_not_modify_run():
+tests\test_task_run_contract_audit.py:228: run = TaskRun(
+tests\test_task_run_contract_audit.py:420: run_b = TaskRun(
+tests\test_task_run_execution_mapping.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_execution_mapping.py:78: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:100: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:122: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:144: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:166: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:191: run = TaskRun(make_task())
+tests\test_task_run_execution_mapping.py:213: run = TaskRun(make_task())
+tests\test_task_run_executor.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_executor.py:219: def test_resolution_failure_stops_run() -> None:
+tests\test_task_run_executor.py:356: def test_bad_evidence_producer_fails_run() -> None:
+tests\test_task_run_executor.py:389: def test_outcome_is_attached_to_run() -> None:
+tests\test_task_run_policy_isolation.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_state_mapper.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_state_model.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_run_state_model.py:58: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:69: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:75: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:86: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:101: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:114: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:126: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:141: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:156: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:167: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:182: run = TaskRun(make_task())
+tests\test_task_run_state_model.py:199: run = TaskRun(make_task())
+tests\test_task_run_terminal_lifecycle.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_v3_model.py:5: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_v3_model.py:114: ChangeRecordPath(
+tests\test_task_v3_schema.py:17: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_v3_schema.py:27: with SCHEMA_PATH.open("r", encoding="utf-8") as f:
+tests\test_task_v3_schema.py:664: def run() -> int:
+tests\test_task_v3_schema.py:753: raise SystemExit(run())
+tests\test_task_v3_schema_model_roundtrip.py:10: ROOT = Path(__file__).resolve().parents[1]
+tests\test_task_v3_schema_model_roundtrip.py:22: with SCHEMA_PATH.open("r", encoding="utf-8") as f:
+tests\test_task_v3_validation.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_transaction_execution_policy.py:4: PROJECT_ROOT = Path(__file__).resolve().parents[1]
+tests\test_transaction_policy_pipeline.py:7: ROOT = Path(__file__).resolve().parents[1]
+tests\test_validation.py:7: ROOT = Path(__file__).resolve().parents[1]
+
+======================================================================
