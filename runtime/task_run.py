@@ -200,6 +200,10 @@ class TaskRun:
             self.integrity,
             TaskIntegrity,
         ):
+            raise TypeError(
+                "TaskRun integrity must be a TaskIntegrity."
+            )
+
         if self.failure_code is not None and not isinstance(
             self.failure_code,
             FailureCode,
@@ -216,7 +220,10 @@ class TaskRun:
                 "TaskRun recoverability must be a Recoverability or None."
             )
 
-        if not isinstance(self.v3_integrity, V3TaskIntegrity):
+        if not isinstance(
+            self.v3_integrity,
+            V3TaskIntegrity,
+        ):
             raise TypeError(
                 "TaskRun V3 integrity must be a V3TaskIntegrity."
             )
@@ -402,16 +409,19 @@ class TaskRun:
     def set_failure(
         self,
         failure_code: FailureCode,
-        recoverability: Recoverability,
+        recoverability: Recoverability | None = None,
     ) -> None:
         if not isinstance(failure_code, FailureCode):
             raise TypeError(
                 "TaskRun failure_code must be a FailureCode."
             )
 
-        if not isinstance(recoverability, Recoverability):
+        if recoverability is not None and not isinstance(
+            recoverability,
+            Recoverability,
+        ):
             raise TypeError(
-                "TaskRun recoverability must be a Recoverability."
+                "TaskRun recoverability must be a Recoverability or None."
             )
 
         self.failure_code = failure_code

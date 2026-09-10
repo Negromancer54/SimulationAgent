@@ -8,7 +8,10 @@ from runtime.task_run import (
     TaskPhase,
     V3TaskIntegrity,
     V3TaskPhase,
+    TaskStatus,
 )
+from runtime.execution import ExecutionStatus
+from runtime.task_run_executor import TaskRunExecutor
 def test_v3_task_phase_contract():
     assert [phase.value for phase in V3TaskPhase] == [
         "PRECHECK",
@@ -199,13 +202,35 @@ def test_recoverability_contract():
         "ROLLBACK_REQUIRED",
     ]
 def test_v3_result_dimensions_default_state():
-    run = TaskRun(_make_task())
+    run = TaskRun(
+        TaskV3(
+            schema_version=1,
+            task_id="TASK-V3-RESULT-DIMENSIONS",
+            description="V3 result dimensions contract test.",
+            intent={},
+            preconditions=[],
+            expected=[],
+            validation=[],
+            execution_policy={},
+        )
+    )
 
     assert run.failure_code is None
     assert run.recoverability is None
     assert run.v3_integrity is V3TaskIntegrity.UNKNOWN
 def test_v3_failure_sets_failure_code_and_recoverability():
-    run = TaskRun(_make_task())
+    run = TaskRun(
+        TaskV3(
+            schema_version=1,
+            task_id="TASK-V3-RESULT-DIMENSIONS",
+            description="V3 result dimensions contract test.",
+            intent={},
+            preconditions=[],
+            expected=[],
+            validation=[],
+            execution_policy={},
+        )
+    )
 
     run.set_failure(
         FailureCode.EXECUTION_TIMEOUT,
@@ -215,7 +240,18 @@ def test_v3_failure_sets_failure_code_and_recoverability():
     assert run.failure_code is FailureCode.EXECUTION_TIMEOUT
     assert run.recoverability is Recoverability.RETRYABLE
 def test_v3_failure_does_not_mutate_status_or_integrity():
-    run = TaskRun(_make_task())
+    run = TaskRun(
+        TaskV3(
+            schema_version=1,
+            task_id="TASK-V3-RESULT-DIMENSIONS",
+            description="V3 result dimensions contract test.",
+            intent={},
+            preconditions=[],
+            expected=[],
+            validation=[],
+            execution_policy={},
+        )
+    )
 
     run.set_failure(
         FailureCode.EXECUTION_TIMEOUT,
@@ -226,7 +262,18 @@ def test_v3_failure_does_not_mutate_status_or_integrity():
     assert run.v3_phase is V3TaskPhase.PRECHECK
     assert run.v3_integrity is V3TaskIntegrity.UNKNOWN
 def test_v3_integrity_is_independent_dimension():
-    run = TaskRun(_make_task())
+    run = TaskRun(
+        TaskV3(
+            schema_version=1,
+            task_id="TASK-V3-RESULT-DIMENSIONS",
+            description="V3 result dimensions contract test.",
+            intent={},
+            preconditions=[],
+            expected=[],
+            validation=[],
+            execution_policy={},
+        )
+    )
 
     run.set_v3_integrity(V3TaskIntegrity.DEGRADED)
 
@@ -234,3 +281,26 @@ def test_v3_integrity_is_independent_dimension():
     assert run.task_status is TaskStatus.PENDING
     assert run.failure_code is None
     assert run.recoverability is None
+def test_execution_timeout_maps_to_timeout_failure_code():
+    code = TaskRunExecutor._map_execution_failure_code(
+        ExecutionStatus.CANCELLED,
+        "Execution timeout reached.",
+    )
+
+    assert code is FailureCode.EXECUTION_TIMEOUT
+
+
+def test_execution_cancellation_maps_to_cancelled_failure_code():
+    code = TaskRunExecutor._map_execution_failure_code(
+        ExecutionStatus.CANCELLED,
+        "Execution cancellation requested.",
+    )
+
+    assert code is FailureCode.EXECUTION_CANCELLED
+def test_execution_blocked_maps_to_precondition_failure_code():
+    code = TaskRunExecutor._map_execution_failure_code(
+        ExecutionStatus.BLOCKED,
+        "Execution blocked by unsatisfied preconditions.",
+    )
+
+    assert code is FailureCode.PRECONDITION_FAILED

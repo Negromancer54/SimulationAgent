@@ -59,10 +59,7 @@ from runtime.task_resolution import (
     TaskResolutionStatus,
     TaskResolver,
 )
-from runtime.task_run import (
-    TaskRun,
-    TaskRunStatus,
-)
+
 from runtime.task_run_state_mapper import (
     TaskRunStateMapper,
 )
@@ -76,6 +73,8 @@ from runtime.execution_policy import (
 )
 
 from runtime.task_run import (
+    FailureCode,
+    Recoverability,
     TaskRun,
     TaskRunStatus,
     V3TaskPhase,
@@ -164,7 +163,28 @@ class TaskRunExecutor:
     def _fail_run(
         run: TaskRun,
         message: str,
+        failure_code: FailureCode,
+        recoverability: Recoverability | None = None,
     ) -> TaskRunExecutorResult:
+        if not isinstance(failure_code, FailureCode):
+            raise TypeError(
+                "TaskRunExecutor failure_code must be a FailureCode."
+            )
+
+        if recoverability is not None and not isinstance(
+            recoverability,
+            Recoverability,
+        ):
+            raise TypeError(
+                "TaskRunExecutor recoverability must be a "
+                "Recoverability or None."
+            )
+
+        run.set_failure(
+            failure_code,
+            recoverability,
+        )
+
         if not run.terminal:
             run.set_v3_phase(V3TaskPhase.RESOLUTION)
             run.transition(
@@ -177,7 +197,35 @@ class TaskRunExecutor:
             run=run,
             completed=False,
         )
+    @staticmethod
+    def _map_execution_failure_code(
+        status: ExecutionStatus,
+        message: str = "",
+    ) -> FailureCode | None:
+        if not isinstance(
+            status,
+            ExecutionStatus,
+        ):
+            raise TypeError(
+                "TaskRunExecutor requires an ExecutionStatus."
+            )
 
+        if status is ExecutionStatus.FAILED:
+            return FailureCode.EXECUTION_FAILED
+
+        if status is ExecutionStatus.INFRASTRUCTURE_ERROR:
+            return FailureCode.INFRASTRUCTURE_ERROR
+
+        if status is ExecutionStatus.BLOCKED:
+            return FailureCode.PRECONDITION_FAILED
+
+        if status is ExecutionStatus.CANCELLED:
+            if message == "Execution timeout reached.":
+                return FailureCode.EXECUTION_TIMEOUT
+
+            return FailureCode.EXECUTION_CANCELLED
+
+        return None
     @staticmethod
     def _record_execution_evidence(
         run: TaskRun,
@@ -450,6 +498,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 "TaskV3 failed local semantic validation.",
+                FailureCode.TASK_INVALID,
             )
 
         # ---------------------------------------------------------
@@ -470,7 +519,15 @@ class TaskRunExecutor:
         if (
             resolution.status
             is not TaskResolutionStatus.RESOLVED
-        ):
+        ):  
+            failure_code = FailureCode.RESOLUTION_UNKNOWN_TARGET
+
+            if resolution.status is TaskResolutionStatus.GOAL_NOT_FOUND:
+                failure_code = FailureCode.RESOLUTION_UNKNOWN_GOAL
+            elif resolution.status is TaskResolutionStatus.HANDLER_UNAVAILABLE:
+                failure_code = FailureCode.RESOLUTION_HANDLER_UNAVAILABLE
+            elif resolution.status is TaskResolutionStatus.HANDLER_AMBIGUOUS:
+                failure_code = FailureCode.RESOLUTION_HANDLER_AMBIGUOUS
             return self._fail_run(
                 run,
                 (
@@ -478,6 +535,7 @@ class TaskRunExecutor:
                     f"{resolution.status.value}: "
                     f"{resolution.message}"
                 ),
+                failure_code,
             )
 
         # ---------------------------------------------------------
@@ -498,6 +556,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 f"Planning failed: {plan.message}",
+                FailureCode.PLANNING_FAILED,
             )
         handler_policy = (
             resolution.handler_spec.execution_policy
@@ -524,6 +583,7 @@ class TaskRunExecutor:
                     "Execution policy resolution failed: "
                     f"{policy_resolution.message}"
                 ),
+                FailureCode.PLANNING_FAILED,
             )
 
         run.effective_execution_policy = (
@@ -555,6 +615,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 "Execution blocked by unsatisfied preconditions.",
+                FailureCode.PRECONDITION_FAILED,
             )
 
         # ---------------------------------------------------------
@@ -579,10 +640,13 @@ class TaskRunExecutor:
             run.outcome = TaskOutcomeEvaluator.evaluate(
                 execution=run.execution,
             )
-
-            mapping = TaskRunStateMapper.map(
-                execution.status
+            failure_code = self._map_execution_failure_code(
+                execution.status,
+                execution.message,
             )
+
+            if failure_code is not None:
+                run.set_failure(failure_code)
 
             if (
                 execution.status
@@ -596,6 +660,9 @@ class TaskRunExecutor:
                     run.transition(
                         TaskRunStatus.FAILED
                     )
+            mapping = TaskRunStateMapper.map(
+                execution.status
+            )
 
             if mapping.task_status is not None:
                 run.set_task_status(
@@ -629,6 +696,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 evidence_error,
+                FailureCode.INFRASTRUCTURE_ERROR,
             )
 
         # ---------------------------------------------------------
@@ -649,6 +717,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 expected_error,
+                FailureCode.INFRASTRUCTURE_ERROR,
             )
         run.set_v3_phase(
             V3TaskPhase.VALIDATION
@@ -661,6 +730,7 @@ class TaskRunExecutor:
             return self._fail_run(
                 run,
                 validation_error,
+                FailureCode.INFRASTRUCTURE_ERROR,
             )
 
         # TaskOutcome owns the semantic final decision.
